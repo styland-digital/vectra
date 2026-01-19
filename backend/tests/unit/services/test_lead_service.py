@@ -423,5 +423,9 @@ class TestUpdateLead:
             lead_id=lead.id,
             notes="Test note",
         )
+        
+        # Refresh to ensure enrichment_data is loaded
+        db_session.refresh(result)
 
+        assert result.enrichment_data is not None
         assert result.enrichment_data.get("notes") == "Test note"

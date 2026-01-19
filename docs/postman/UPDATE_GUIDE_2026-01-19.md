@@ -20,9 +20,11 @@ La collection Postman doit être mise à jour pour inclure **35 nouveaux endpoin
 Ajouter dans le dossier `Auth` existant :
 
 #### Accept Invitation (OTP)
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/auth/invite/accept`
 - **Body:**
+
 ```json
 {
     "email": "{{test_email}}",
@@ -32,6 +34,7 @@ Ajouter dans le dossier `Auth` existant :
     "last_name": "User"
 }
 ```
+
 - **Response:** 200 - `LoginResponse` (access_token, refresh_token, user)
 - **Tests:** Sauvegarder tokens comme dans Login
 
@@ -42,22 +45,26 @@ Ajouter dans le dossier `Auth` existant :
 Créer un nouveau dossier `User` avec 9 endpoints :
 
 #### GET /user/me
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/me`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - User profile
 
 #### GET /user/organizations/me
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/organizations/me`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - OrganizationResponse
 
 #### PATCH /user/organizations/me
+
 - **Method:** PATCH
 - **URL:** `{{base_url}}/api/v1/user/organizations/me`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "name": "Updated Organization Name",
@@ -69,16 +76,19 @@ Créer un nouveau dossier `User` avec 9 endpoints :
 ```
 
 #### GET /user/organizations/me/users
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/organizations/me/users?skip=0&limit=100`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - List[OrganizationUserResponse]
 
 #### POST /user/organizations/me/users/invite
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/organizations/me/users/invite`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "email": "newuser@example.com",
@@ -87,13 +97,16 @@ Créer un nouveau dossier `User` avec 9 endpoints :
     "last_name": "User"
 }
 ```
+
 - **Response:** 200 - MessageResponse
 
 #### POST /user/organizations/me/users/create
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/organizations/me/users/create`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "email": "direct@example.com",
@@ -104,13 +117,16 @@ Créer un nouveau dossier `User` avec 9 endpoints :
     "send_welcome_email": true
 }
 ```
+
 - **Response:** 201 - OrganizationUserResponse
 
 #### PATCH /user/organizations/me/users/{user_id}/role
+
 - **Method:** PATCH
 - **URL:** `{{base_url}}/api/v1/user/organizations/me/users/{{user_id}}/role`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "role": "admin"
@@ -118,16 +134,19 @@ Créer un nouveau dossier `User` avec 9 endpoints :
 ```
 
 #### DELETE /user/organizations/me/users/{user_id}
+
 - **Method:** DELETE
 - **URL:** `{{base_url}}/api/v1/user/organizations/me/users/{{user_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 204
 
 #### POST /user/notifications/send
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/notifications/send`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "type": "org_to_prospects",
@@ -145,26 +164,31 @@ Créer un nouveau dossier `User` avec 9 endpoints :
 Créer un nouveau dossier `Admin` avec 9 endpoints :
 
 #### GET /admin/overview
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/admin/overview`
 - **Auth:** Bearer {{platform_admin_token}}
 - **Response:** 200 - PlatformOverviewResponse
 
 #### GET /admin/organizations
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/admin/organizations?skip=0&limit=100&plan=growth`
 - **Auth:** Bearer {{platform_admin_token}}
 
 #### GET /admin/organizations/{org_id}
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/admin/organizations/{{organization_id}}`
 - **Auth:** Bearer {{platform_admin_token}}
 
 #### POST /admin/organizations
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/admin/organizations`
 - **Auth:** Bearer {{platform_admin_token}}
 - **Body:**
+
 ```json
 {
     "name": "New Organization",
@@ -174,10 +198,12 @@ Créer un nouveau dossier `Admin` avec 9 endpoints :
 ```
 
 #### PATCH /admin/organizations/{org_id}
+
 - **Method:** PATCH
 - **URL:** `{{base_url}}/api/v1/admin/organizations/{{organization_id}}`
 - **Auth:** Bearer {{platform_admin_token}}
 - **Body:**
+
 ```json
 {
     "plan": "scale",
@@ -186,26 +212,31 @@ Créer un nouveau dossier `Admin` avec 9 endpoints :
 ```
 
 #### DELETE /admin/organizations/{org_id}
+
 - **Method:** DELETE
 - **URL:** `{{base_url}}/api/v1/admin/organizations/{{organization_id}}`
 - **Auth:** Bearer {{platform_admin_token}}
 - **Response:** 204
 
 #### GET /admin/users
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/admin/users?skip=0&limit=100&organization_id={{organization_id}}`
 - **Auth:** Bearer {{platform_admin_token}}
 
 #### GET /admin/system/metrics
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/admin/system/metrics`
 - **Auth:** Bearer {{platform_admin_token}}
 
 #### POST /admin/notifications/send
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/admin/notifications/send`
 - **Auth:** Bearer {{platform_admin_token}}
 - **Body:**
+
 ```json
 {
     "type": "vectra_to_users",
@@ -222,28 +253,33 @@ Créer un nouveau dossier `Admin` avec 9 endpoints :
 Créer un nouveau dossier `Leads` sous `User`, avec 4 endpoints :
 
 #### GET /user/leads
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/leads?campaign_id={{campaign_id}}&status=qualified&bant_score_min=60&search=VP`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - LeadListResponse (data, pagination)
 
 #### GET /user/leads/{lead_id}
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - LeadDetailResponse (avec interactions, emails, meetings)
 
 #### GET /user/leads/{lead_id}/interactions
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}/interactions?skip=0&limit=100`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - InteractionListResponse
 
 #### PATCH /user/leads/{lead_id}
+
 - **Method:** PATCH
 - **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "first_name": "Updated",
@@ -261,22 +297,26 @@ Créer un nouveau dossier `Leads` sous `User`, avec 4 endpoints :
 Créer un nouveau dossier `Emails` sous `User`, avec 4 endpoints :
 
 #### GET /user/emails
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/emails?campaign_id={{campaign_id}}&status=pending&skip=0&limit=100`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - EmailListResponse (data, pagination)
 
 #### GET /user/emails/{email_id}
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - EmailDetailResponse (avec tracking)
 
 #### POST /user/emails/{email_id}/approve
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}/approve`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "modifications": {
@@ -285,18 +325,22 @@ Créer un nouveau dossier `Emails` sous `User`, avec 4 endpoints :
     }
 }
 ```
+
 - **Response:** 200 - EmailApproveResponse
 
 #### POST /user/emails/{email_id}/reject
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}/reject`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "reason": "Email not suitable for this campaign"
 }
 ```
+
 - **Response:** 200 - EmailDetailResponse (status: rejected)
 
 ---
@@ -306,15 +350,18 @@ Créer un nouveau dossier `Emails` sous `User`, avec 4 endpoints :
 Créer un nouveau dossier `Campaigns` sous `User` ou à la racine, avec 9 endpoints :
 
 #### GET /user/campaigns
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/campaigns?status=active&skip=0&limit=100`
 - **Auth:** Bearer {{access_token}}
 
 #### POST /user/campaigns
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/campaigns`
 - **Auth:** Bearer {{access_token}}
 - **Body:**
+
 ```json
 {
     "name": "Q1 Sales Campaign",
@@ -328,39 +375,46 @@ Créer un nouveau dossier `Campaigns` sous `User` ou à la racine, avec 9 endpoi
 ```
 
 #### GET /user/campaigns/{campaign_id}
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}`
 - **Auth:** Bearer {{access_token}}
 
 #### PATCH /user/campaigns/{campaign_id}
+
 - **Method:** PATCH
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Body:** (mêmes champs que POST, tous optionnels)
 
 #### POST /user/campaigns/{campaign_id}/launch
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}/launch`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 200 - CampaignResponse
 
 #### POST /user/campaigns/{campaign_id}/pause
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}/pause`
 - **Auth:** Bearer {{access_token}}
 
 #### POST /user/campaigns/{campaign_id}/resume
+
 - **Method:** POST
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}/resume`
 - **Auth:** Bearer {{access_token}}
 
 #### DELETE /user/campaigns/{campaign_id}
+
 - **Method:** DELETE
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}`
 - **Auth:** Bearer {{access_token}}
 - **Response:** 204
 
 #### GET /user/campaigns/{campaign_id}/stats
+
 - **Method:** GET
 - **URL:** `{{base_url}}/api/v1/user/campaigns/{{campaign_id}}/stats`
 - **Auth:** Bearer {{access_token}}

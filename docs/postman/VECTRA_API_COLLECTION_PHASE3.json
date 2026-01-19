@@ -297,6 +297,203 @@
                         "description": "Send notification to prospects (Owner/Admin only)."
                     },
                     "response": []
+                },
+                {
+                    "name": "Leads",
+                    "item": [
+                        {
+                            "name": "List Leads",
+                            "request": {
+                                "method": "GET",
+                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/leads?campaign_id={{campaign_id}}&status=qualified&bant_score_min=60&skip=0&limit=100",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "leads"],
+                                    "query": [
+                                        {"key": "campaign_id", "value": "{{campaign_id}}", "disabled": true},
+                                        {"key": "status", "value": "qualified", "disabled": true},
+                                        {"key": "bant_score_min", "value": "60", "disabled": true},
+                                        {"key": "skip", "value": "0", "disabled": true},
+                                        {"key": "limit", "value": "100", "disabled": true}
+                                    ]
+                                },
+                                "description": "List leads with optional filters (campaign_id, status, intent, bant_score, search, dates)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Lead",
+                            "request": {
+                                "method": "GET",
+                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}"]
+                                },
+                                "description": "Get lead details with interactions, emails, and meetings."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Lead Interactions",
+                            "request": {
+                                "method": "GET",
+                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}/interactions?skip=0&limit=100",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}", "interactions"],
+                                    "query": [
+                                        {"key": "skip", "value": "0", "disabled": true},
+                                        {"key": "limit", "value": "100", "disabled": true}
+                                    ]
+                                },
+                                "description": "Get lead interaction history (emails, meetings, agent runs)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Update Lead",
+                            "request": {
+                                "method": "PATCH",
+                                "header": [
+                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
+                                    {"key": "Content-Type", "value": "application/json"}
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"first_name\": \"Updated\",\n    \"last_name\": \"Name\",\n    \"phone\": \"+33612345678\",\n    \"status\": \"qualified\",\n    \"notes\": \"Updated notes\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}"]
+                                },
+                                "description": "Update lead manually (first_name, last_name, phone, status, notes)."
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "Endpoints pour gérer les leads"
+                },
+                {
+                    "name": "Emails",
+                    "item": [
+                        {
+                            "name": "List Emails",
+                            "request": {
+                                "method": "GET",
+                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/emails?campaign_id={{campaign_id}}&status=pending&skip=0&limit=100",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "emails"],
+                                    "query": [
+                                        {"key": "campaign_id", "value": "{{campaign_id}}", "disabled": true},
+                                        {"key": "lead_id", "value": "{{lead_id}}", "disabled": true},
+                                        {"key": "status", "value": "pending", "disabled": true},
+                                        {"key": "skip", "value": "0", "disabled": true},
+                                        {"key": "limit", "value": "100", "disabled": true}
+                                    ]
+                                },
+                                "description": "List emails with optional filters (campaign_id, lead_id, status)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Get Email",
+                            "request": {
+                                "method": "GET",
+                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "emails", "{{email_id}}"]
+                                },
+                                "description": "Get email details with tracking information."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Approve Email",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Email status is approved\", function () {",
+                                            "    const response = pm.response.json();",
+                                            "    pm.expect(response.data.status).to.eql(\"approved\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
+                                    {"key": "Content-Type", "value": "application/json"}
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"modifications\": {\n        \"subject\": \"Updated Subject (optional)\",\n        \"body_html\": \"<p>Updated body (optional)</p>\"\n    }\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}/approve",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "emails", "{{email_id}}", "approve"]
+                                },
+                                "description": "Approve email for sending. Optionally modify subject or body."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "Reject Email",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Status code is 200\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Email status is rejected\", function () {",
+                                            "    const response = pm.response.json();",
+                                            "    pm.expect(response.data.status).to.eql(\"rejected\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
+                                    {"key": "Content-Type", "value": "application/json"}
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n    \"reason\": \"Email not suitable for this campaign\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}/reject",
+                                    "host": ["{{base_url}}"],
+                                    "path": ["api", "v1", "user", "emails", "{{email_id}}", "reject"]
+                                },
+                                "description": "Reject email with reason."
+                            },
+                            "response": []
+                        }
+                    ],
+                    "description": "Endpoints pour gérer les emails"
                 }
             ],
             "description": "Endpoints pour les utilisateurs d'organisation"
@@ -472,6 +669,24 @@
             "value": "",
             "type": "string",
             "description": "ID of target user for role updates/removals"
+        },
+        {
+            "key": "campaign_id",
+            "value": "",
+            "type": "string",
+            "description": "ID of campaign for filtering leads/emails"
+        },
+        {
+            "key": "lead_id",
+            "value": "",
+            "type": "string",
+            "description": "ID of lead for lead operations"
+        },
+        {
+            "key": "email_id",
+            "value": "",
+            "type": "string",
+            "description": "ID of email for email operations"
         }
     ]
 }
