@@ -346,15 +346,15 @@ def send_password_reset_email(
     context = {
         "to": to,
         "reset_url": reset_url,
-        "user_name": user_name or "utilisateur",
-        "subject": "Réinitialisation de votre mot de passe - Vectra",
+        "user_name": user_name or "user",
+        "subject": "Reset Your Password - Vectra",
     }
     
     html_content, text_content = load_email_template("password-reset", context)
     
     return send_email(
         to=to,
-        subject="Réinitialisation de votre mot de passe - Vectra",
+        subject="Reset Your Password - Vectra",
         html_content=html_content,
         text_content=text_content,
         from_name="Vectra",
@@ -447,15 +447,49 @@ def send_invitation_email(
         "invitation_url": invitation_url,
         "role": role,
         "otp": otp,
-        "user_name": user_name or "utilisateur",
-        "subject": f"Invitation à rejoindre {organization_name} sur Vectra",
+        "user_name": user_name or "user",
+        "subject": f"Invitation to join {organization_name} on Vectra",
     }
     
     html_content, text_content = load_email_template("invite-user", context)
     
     return send_email(
         to=to,
-        subject=f"Invitation à rejoindre {organization_name} sur Vectra",
+        subject=f"Invitation to join {organization_name} on Vectra",
+        html_content=html_content,
+        text_content=text_content,
+        from_name="Vectra",
+    )
+
+
+def send_password_change_otp_email(
+    to: str,
+    otp: str,
+    user_name: Optional[str] = None,
+) -> Dict[str, Any]:
+    """
+    Send password change OTP email.
+    
+    Args:
+        to: Recipient email address
+        otp: 6-digit OTP code
+        user_name: User's name (optional)
+    
+    Returns:
+        Dict with 'id' and 'success'
+    """
+    context = {
+        "to": to,
+        "otp": otp,
+        "user_name": user_name or "user",
+        "subject": "Change Your Password - Vectra",
+    }
+    
+    html_content, text_content = load_email_template("password-change-otp", context)
+    
+    return send_email(
+        to=to,
+        subject="Change Your Password - Vectra",
         html_content=html_content,
         text_content=text_content,
         from_name="Vectra",
@@ -476,14 +510,16 @@ class ResendService:
         organization_name: str,
         invitation_url: str,
         role: str,
+        otp: Optional[str] = None,
         user_name: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Send invitation email."""
+        """Send invitation email with OTP."""
         return send_invitation_email(
             to=to,
             inviter_name=inviter_name,
             organization_name=organization_name,
             invitation_url=invitation_url,
             role=role,
+            otp=otp,
             user_name=user_name,
         )

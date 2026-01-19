@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>{{ title or "Notification Vectra" }}</h1>
+<h1>{{ title or "Vectra Notification" }}</h1>
 
-<p>Bonjour {{ user_name or "utilisateur" }},</p>
+<p>Hello {{ user_name or "user" }},</p>
 
 {% if body_html %}
 {{ body_html | safe }}
 {% else %}
-<p>{{ body or "Vous avez reçu une nouvelle notification de Vectra." }}</p>
+<p>{{ body or "You have received a new notification from Vectra." }}</p>
 {% endif %}
 
 {% if action_url and action_text %}

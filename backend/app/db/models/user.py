@@ -59,6 +59,10 @@ class User(BaseModel):
     # Email verification OTP
     email_verification_otp = Column(String(6))
     email_verification_otp_expires_at = Column(DateTime)
+    
+    # Password change OTP
+    password_change_otp = Column(String(6))
+    password_change_otp_expires_at = Column(DateTime)
 
     # Relationships
     organization = relationship("Organization", back_populates="users")

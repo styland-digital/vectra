@@ -1,47 +1,45 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Invitation à rejoindre {{ organization_name }}</h1>
+<h1>Invitation to join {{ organization_name }}</h1>
 
-<p>Bonjour{% if user_name %} {{ user_name }}{% endif %},</p>
+<p>Hello{% if user_name %} {{ user_name }}{% endif %},</p>
 
-<p>{{ inviter_name }} vous invite à rejoindre <strong>{{ organization_name }}</strong> sur Vectra en tant que <strong>{{
-        role }}</strong>.</p>
+<p>{{ inviter_name }} has invited you to join <strong>{{ organization_name }}</strong> on Vectra as a <strong>{{ role }}</strong>.</p>
 
-<p>Vectra est une plateforme SaaS d'agents IA pour automatiser la prospection B2B. En acceptant cette invitation, vous
-    pourrez collaborer avec votre équipe pour trouver, qualifier et contacter des prospects.</p>
+<p>Vectra is a SaaS platform with AI agents to automate B2B prospecting. By accepting this invitation, you'll be able to collaborate with your team to find, qualify, and contact prospects.</p>
 
 {% if otp %}
 <div
     style="background-color: #F1F5F9; border: 2px solid #E2E8F0; border-radius: 8px; padding: 24px; margin: 32px 0; text-align: center;">
-    <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748B; font-weight: 500;">Votre code d'invitation :</p>
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748B; font-weight: 500;">Your invitation code:</p>
     <p
         style="margin: 0; font-size: 32px; font-weight: 700; color: #0F172A; letter-spacing: 4px; font-family: 'Courier New', monospace;">
         {{ otp }}</p>
 </div>
 
 <p style="font-size: 14px; color: #64748B; margin-top: 24px;">
-    Utilisez ce code pour accepter votre invitation sur la page suivante :
+    Use this code to accept your invitation on the following page:
 </p>
 
 <div class="button-container">
-    <a href="{{ invitation_url }}" class="button">Accepter l'invitation</a>
+    <a href="{{ invitation_url }}" class="button">Accept Invitation</a>
 </div>
 {% else %}
 <div class="button-container">
-    <a href="{{ invitation_url }}" class="button">Accepter l'invitation</a>
+    <a href="{{ invitation_url }}" class="button">Accept Invitation</a>
 </div>
 {% endif %}
 
 <p style="font-size: 14px; color: #94A3B8; margin-top: 24px;">
     {% if otp %}
-    Ce code d'invitation expire dans 7 jours.
+    This invitation code expires in 7 days.
     {% else %}
-    Ce lien d'invitation expire dans 7 jours.
+    This invitation link expires in 7 days.
     {% endif %}
 </p>
 
 <p style="font-size: 14px; color: #94A3B8;">
-    Si vous n'avez pas demandé cette invitation, vous pouvez ignorer cet email.
+    If you did not request this invitation, you can ignore this email.
 </p>
 {% endblock %}

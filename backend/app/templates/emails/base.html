@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -60,7 +60,7 @@
 
         /* Logo */
         .logo-container {
-            padding: 32px 32px 24px;
+            padding: 32px 32px 16px;
             text-align: left;
             background-color: #FFFFFF;
         }
@@ -253,22 +253,22 @@
                                 <tr>
                                     <td>
                                         <p class="footer-links">
-                                            <a href="{{ app_url }}/about">À propos</a>
-                                            <a href="{{ app_url }}/privacy">Confidentialité</a>
-                                            <a href="{{ app_url }}/terms">Conditions</a>
+                                            <a href="{{ app_url }}/about">About</a>
+                                            <a href="{{ app_url }}/privacy">Privacy</a>
+                                            <a href="{{ app_url }}/terms">Terms</a>
                                             <a href="{{ app_url }}/contact">Contact</a>
                                         </p>
                                         <p class="footer-text">
-                                            Cet email a été envoyé à {{ recipient_email or "vous" }}.
+                                            This email was sent to {{ recipient_email or "you" }}.
                                         </p>
                                         <p class="footer-text">
-                                            © 2026 Vectra. Tous droits réservés.<br>
-                                            Automatiser la prospection B2B avec des agents IA.
+                                            © 2026 Vectra. All rights reserved.<br>
+                                            Automate B2B prospecting with AI agents.
                                         </p>
                                         {% if unsubscribe_url %}
                                         <p class="footer-text" style="margin-top: 16px;">
                                             <a href="{{ unsubscribe_url }}"
-                                                style="color: #94A3B8; text-decoration: underline;">Se désabonner</a>
+                                                style="color: #94A3B8; text-decoration: underline;">Unsubscribe</a>
                                         </p>
                                         {% endif %}
                                     </td>

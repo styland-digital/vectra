@@ -19,8 +19,9 @@ from app.schemas.auth import (
     ResetPasswordRequest,
     AcceptInvitationRequest,
     MessageResponse,
+    RequestPasswordChangeRequest,
+    ChangePasswordWithOtpRequest,
 )
-from app.schemas.user import ChangePasswordRequest
 from app.services.auth import AuthService
 from app.services.email_verification import EmailVerificationService
 from app.services.password_reset import PasswordResetService
@@ -163,19 +164,41 @@ def register(
     )
 
 
-@router.post("/change-password", status_code=204)
-def change_password(
-    request: ChangePasswordRequest,
+@router.post("/change-password/request", response_model=MessageResponse, status_code=200)
+def request_password_change(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
-    Change current user's password.
+    Request password change by sending OTP to user's email.
+    
+    User must verify their identity with OTP before changing password.
     """
-    auth_service = AuthService(db)
-    auth_service.change_password(
+    from app.services.password_change import PasswordChangeService
+    
+    password_change_service = PasswordChangeService(db)
+    password_change_service.request_password_change(current_user)
+    
+    return MessageResponse(message="Password change OTP sent to your email")
+
+
+@router.post("/change-password/verify", status_code=204)
+def change_password_with_otp(
+    request: ChangePasswordWithOtpRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Change password after OTP verification.
+    
+    User must first request password change to receive OTP via email.
+    """
+    from app.services.password_change import PasswordChangeService
+    
+    password_change_service = PasswordChangeService(db)
+    password_change_service.change_password_with_otp(
         user=current_user,
-        current_password=request.current_password,
+        otp=request.otp,
         new_password=request.new_password,
     )
     return Response(status_code=204)

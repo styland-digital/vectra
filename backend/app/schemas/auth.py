@@ -118,3 +118,14 @@ class AcceptInvitationRequest(BaseModel):
     password: str = Field(..., min_length=8)
     first_name: Optional[str] = Field(None, max_length=100)
     last_name: Optional[str] = Field(None, max_length=100)
+
+
+class RequestPasswordChangeRequest(BaseModel):
+    """Request to send password change OTP."""
+    pass  # No fields needed, uses authenticated user
+
+
+class ChangePasswordWithOtpRequest(BaseModel):
+    """Request to change password with OTP verification."""
+    otp: str = Field(..., min_length=6, max_length=6, pattern="^[0-9]{6}$")
+    new_password: str = Field(..., min_length=8)

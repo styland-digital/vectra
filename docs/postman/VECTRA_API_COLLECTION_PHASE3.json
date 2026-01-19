@@ -46,15 +46,27 @@
                     ],
                     "request": {
                         "method": "POST",
-                        "header": [{"key": "Content-Type", "value": "application/json"}],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n    \"email\": \"{{test_email}}\",\n    \"password\": \"password123\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"User\",\n    \"organization_name\": \"Test Organization\"\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/auth/register",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "auth", "register"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "register"
+                            ]
                         },
                         "description": "Register a new user with a new organization. If email matches PLATFORM_ADMIN_EMAIL, creates platform admin without organization."
                     },
@@ -90,14 +102,29 @@
                         "body": {
                             "mode": "urlencoded",
                             "urlencoded": [
-                                {"key": "username", "value": "{{test_email}}", "type": "text"},
-                                {"key": "password", "value": "password123", "type": "text"}
+                                {
+                                    "key": "username",
+                                    "value": "{{test_email}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                }
                             ]
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/auth/login",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "auth", "login"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "login"
+                            ]
                         }
                     },
                     "response": []
@@ -106,15 +133,27 @@
                     "name": "Refresh Token",
                     "request": {
                         "method": "POST",
-                        "header": [{"key": "Content-Type", "value": "application/json"}],
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
                         "body": {
                             "mode": "raw",
                             "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/auth/refresh",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "auth", "refresh"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "refresh"
+                            ]
                         }
                     },
                     "response": []
@@ -124,8 +163,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -133,8 +178,15 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/auth/change-password",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "auth", "change-password"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "change-password"
+                            ]
                         }
                     },
                     "response": []
@@ -143,11 +195,23 @@
                     "name": "Logout",
                     "request": {
                         "method": "POST",
-                        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/auth/logout",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "auth", "logout"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "logout"
+                            ]
                         }
                     },
                     "response": []
@@ -162,11 +226,23 @@
                     "name": "Get Current User (Me)",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/me",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "me"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "me"
+                            ]
                         },
                         "description": "Get current authenticated user profile."
                     },
@@ -176,11 +252,24 @@
                     "name": "Get My Organization",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me"
+                            ]
                         },
                         "description": "Get current user's organization (Owner/Admin only)."
                     },
@@ -191,8 +280,14 @@
                     "request": {
                         "method": "PATCH",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -200,8 +295,16 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me"
+                            ]
                         },
                         "description": "Update current user's organization (Owner/Admin only)."
                     },
@@ -211,11 +314,25 @@
                     "name": "List Organization Users",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me/users",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me", "users"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me",
+                                "users"
+                            ]
                         },
                         "description": "List users in current organization (Owner/Admin/Manager only)."
                     },
@@ -226,8 +343,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -235,8 +358,18 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me/users/invite",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me", "users", "invite"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me",
+                                "users",
+                                "invite"
+                            ]
                         },
                         "description": "Invite a user to join organization (Owner/Admin only)."
                     },
@@ -247,8 +380,14 @@
                     "request": {
                         "method": "PATCH",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -256,8 +395,19 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me/users/{{target_user_id}}/role",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me", "users", "{{target_user_id}}", "role"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me",
+                                "users",
+                                "{{target_user_id}}",
+                                "role"
+                            ]
                         },
                         "description": "Update user role in organization (Owner/Admin only)."
                     },
@@ -267,11 +417,26 @@
                     "name": "Remove User",
                     "request": {
                         "method": "DELETE",
-                        "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/organizations/me/users/{{target_user_id}}",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "organizations", "me", "users", "{{target_user_id}}"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "organizations",
+                                "me",
+                                "users",
+                                "{{target_user_id}}"
+                            ]
                         },
                         "description": "Remove user from organization (Owner/Admin only)."
                     },
@@ -282,8 +447,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -291,8 +462,16 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/user/notifications/send",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "user", "notifications", "send"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "notifications",
+                                "send"
+                            ]
                         },
                         "description": "Send notification to prospects (Owner/Admin only)."
                     },
@@ -305,17 +484,49 @@
                             "name": "List Leads",
                             "request": {
                                 "method": "GET",
-                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/leads?campaign_id={{campaign_id}}&status=qualified&bant_score_min=60&skip=0&limit=100",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "leads"],
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "leads"
+                                    ],
                                     "query": [
-                                        {"key": "campaign_id", "value": "{{campaign_id}}", "disabled": true},
-                                        {"key": "status", "value": "qualified", "disabled": true},
-                                        {"key": "bant_score_min", "value": "60", "disabled": true},
-                                        {"key": "skip", "value": "0", "disabled": true},
-                                        {"key": "limit", "value": "100", "disabled": true}
+                                        {
+                                            "key": "campaign_id",
+                                            "value": "{{campaign_id}}",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "qualified",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "bant_score_min",
+                                            "value": "60",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "skip",
+                                            "value": "0",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "100",
+                                            "disabled": true
+                                        }
                                     ]
                                 },
                                 "description": "List leads with optional filters (campaign_id, status, intent, bant_score, search, dates)."
@@ -326,11 +537,24 @@
                             "name": "Get Lead",
                             "request": {
                                 "method": "GET",
-                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}"]
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "leads",
+                                        "{{lead_id}}"
+                                    ]
                                 },
                                 "description": "Get lead details with interactions, emails, and meetings."
                             },
@@ -340,14 +564,36 @@
                             "name": "Get Lead Interactions",
                             "request": {
                                 "method": "GET",
-                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}/interactions?skip=0&limit=100",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}", "interactions"],
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "leads",
+                                        "{{lead_id}}",
+                                        "interactions"
+                                    ],
                                     "query": [
-                                        {"key": "skip", "value": "0", "disabled": true},
-                                        {"key": "limit", "value": "100", "disabled": true}
+                                        {
+                                            "key": "skip",
+                                            "value": "0",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "100",
+                                            "disabled": true
+                                        }
                                     ]
                                 },
                                 "description": "Get lead interaction history (emails, meetings, agent runs)."
@@ -359,8 +605,14 @@
                             "request": {
                                 "method": "PATCH",
                                 "header": [
-                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                                    {"key": "Content-Type", "value": "application/json"}
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
                                 ],
                                 "body": {
                                     "mode": "raw",
@@ -368,8 +620,16 @@
                                 },
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/leads/{{lead_id}}",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "leads", "{{lead_id}}"]
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "leads",
+                                        "{{lead_id}}"
+                                    ]
                                 },
                                 "description": "Update lead manually (first_name, last_name, phone, status, notes)."
                             },
@@ -385,17 +645,49 @@
                             "name": "List Emails",
                             "request": {
                                 "method": "GET",
-                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/emails?campaign_id={{campaign_id}}&status=pending&skip=0&limit=100",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "emails"],
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "emails"
+                                    ],
                                     "query": [
-                                        {"key": "campaign_id", "value": "{{campaign_id}}", "disabled": true},
-                                        {"key": "lead_id", "value": "{{lead_id}}", "disabled": true},
-                                        {"key": "status", "value": "pending", "disabled": true},
-                                        {"key": "skip", "value": "0", "disabled": true},
-                                        {"key": "limit", "value": "100", "disabled": true}
+                                        {
+                                            "key": "campaign_id",
+                                            "value": "{{campaign_id}}",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "lead_id",
+                                            "value": "{{lead_id}}",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "status",
+                                            "value": "pending",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "skip",
+                                            "value": "0",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "100",
+                                            "disabled": true
+                                        }
                                     ]
                                 },
                                 "description": "List emails with optional filters (campaign_id, lead_id, status)."
@@ -406,11 +698,24 @@
                             "name": "Get Email",
                             "request": {
                                 "method": "GET",
-                                "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "emails", "{{email_id}}"]
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "emails",
+                                        "{{email_id}}"
+                                    ]
                                 },
                                 "description": "Get email details with tracking information."
                             },
@@ -438,8 +743,14 @@
                             "request": {
                                 "method": "POST",
                                 "header": [
-                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                                    {"key": "Content-Type", "value": "application/json"}
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
                                 ],
                                 "body": {
                                     "mode": "raw",
@@ -447,8 +758,17 @@
                                 },
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}/approve",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "emails", "{{email_id}}", "approve"]
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "emails",
+                                        "{{email_id}}",
+                                        "approve"
+                                    ]
                                 },
                                 "description": "Approve email for sending. Optionally modify subject or body."
                             },
@@ -476,8 +796,14 @@
                             "request": {
                                 "method": "POST",
                                 "header": [
-                                    {"key": "Authorization", "value": "Bearer {{access_token}}"},
-                                    {"key": "Content-Type", "value": "application/json"}
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    },
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
                                 ],
                                 "body": {
                                     "mode": "raw",
@@ -485,8 +811,17 @@
                                 },
                                 "url": {
                                     "raw": "{{base_url}}/api/v1/user/emails/{{email_id}}/reject",
-                                    "host": ["{{base_url}}"],
-                                    "path": ["api", "v1", "user", "emails", "{{email_id}}", "reject"]
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "v1",
+                                        "user",
+                                        "emails",
+                                        "{{email_id}}",
+                                        "reject"
+                                    ]
                                 },
                                 "description": "Reject email with reason."
                             },
@@ -505,11 +840,23 @@
                     "name": "Get Platform Overview",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/overview",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "overview"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "overview"
+                            ]
                         },
                         "description": "Get platform overview statistics (Platform Admin only)."
                     },
@@ -519,11 +866,23 @@
                     "name": "List All Organizations",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/organizations",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "organizations"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "organizations"
+                            ]
                         },
                         "description": "List all organizations (Platform Admin only)."
                     },
@@ -533,11 +892,24 @@
                     "name": "Get Organization",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/organizations/{{organization_id}}",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "organizations", "{{organization_id}}"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "organizations",
+                                "{{organization_id}}"
+                            ]
                         },
                         "description": "Get organization details (Platform Admin only)."
                     },
@@ -548,8 +920,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{admin_access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -557,8 +935,15 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/organizations",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "organizations"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "organizations"
+                            ]
                         },
                         "description": "Create a new organization (Platform Admin only)."
                     },
@@ -569,8 +954,14 @@
                     "request": {
                         "method": "PATCH",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{admin_access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -578,8 +969,16 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/organizations/{{organization_id}}",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "organizations", "{{organization_id}}"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "organizations",
+                                "{{organization_id}}"
+                            ]
                         },
                         "description": "Update organization (Platform Admin only)."
                     },
@@ -589,11 +988,24 @@
                     "name": "Delete Organization",
                     "request": {
                         "method": "DELETE",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/organizations/{{organization_id}}",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "organizations", "{{organization_id}}"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "organizations",
+                                "{{organization_id}}"
+                            ]
                         },
                         "description": "Delete organization (Platform Admin only)."
                     },
@@ -603,11 +1015,23 @@
                     "name": "List All Users",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/users",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "users"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "users"
+                            ]
                         },
                         "description": "List all users (Platform Admin only, excludes platform admins)."
                     },
@@ -617,11 +1041,24 @@
                     "name": "Get System Metrics",
                     "request": {
                         "method": "GET",
-                        "header": [{"key": "Authorization", "value": "Bearer {{admin_access_token}}"}],
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            }
+                        ],
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/system/metrics",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "system", "metrics"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "system",
+                                "metrics"
+                            ]
                         },
                         "description": "Get system metrics (Platform Admin only)."
                     },
@@ -632,8 +1069,14 @@
                     "request": {
                         "method": "POST",
                         "header": [
-                            {"key": "Authorization", "value": "Bearer {{admin_access_token}}"},
-                            {"key": "Content-Type", "value": "application/json"}
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{admin_access_token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
                         ],
                         "body": {
                             "mode": "raw",
@@ -641,8 +1084,16 @@
                         },
                         "url": {
                             "raw": "{{base_url}}/api/v1/admin/notifications/send",
-                            "host": ["{{base_url}}"],
-                            "path": ["api", "v1", "admin", "notifications", "send"]
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "admin",
+                                "notifications",
+                                "send"
+                            ]
                         },
                         "description": "Send notification to all platform users (Platform Admin only)."
                     },
