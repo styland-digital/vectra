@@ -1,0 +1,167 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: vectra-postgres
+    environment:
+      POSTGRES_USER: vectra
+      POSTGRES_PASSWORD: vectra
+      POSTGRES_DB: vectra
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U vectra" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vectra-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: vectra-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vectra-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vectra-backend
+    environment:
+      - DATABASE_URL=postgresql+psycopg://vectra:vectra@postgres:5432/vectra
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+      # LLM Configuration
+      - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-https://api.ollama.com}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2:7b}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY:-}
+      - OLLAMA_CLOUD_HOST=${OLLAMA_CLOUD_HOST:-https://ollama.com}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-${CLAUDE_API_KEY:-}}
+      # Email Configuration
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL:-noreply@vectra.io}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL:-noreply@vectra.io}
+      # External APIs
+      - ROCKETREACH_API_KEY=${ROCKETREACH_API_KEY:-}
+      - CALENDLY_API_KEY=${CALENDLY_API_KEY:-}
+      - HUBSPOT_API_KEY=${HUBSPOT_API_KEY:-}
+      # JWT
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-key-change-in-production}
+      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-15}
+      - JWT_REFRESH_TOKEN_EXPIRE_DAYS=${JWT_REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      # Platform
+      - PLATFORM_ADMIN_EMAIL=${PLATFORM_ADMIN_EMAIL:-admin@vectra.io}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/venv
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - vectra-network
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vectra-celery
+    environment:
+      - DATABASE_URL=postgresql+psycopg://vectra:vectra@postgres:5432/vectra
+      - REDIS_URL=redis://redis:6379/0
+      - ENVIRONMENT=development
+      - DEBUG=true
+      # LLM Configuration
+      - LLM_PROVIDER=${LLM_PROVIDER:-ollama}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-https://api.ollama.com}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama2:7b}
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY:-}
+      - OLLAMA_CLOUD_HOST=${OLLAMA_CLOUD_HOST:-https://ollama.com}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-${CLAUDE_API_KEY:-}}
+      # Email Configuration
+      - RESEND_API_KEY=${RESEND_API_KEY:-}
+      - RESEND_FROM_EMAIL=${RESEND_FROM_EMAIL:-noreply@vectra.io}
+      - SENDGRID_API_KEY=${SENDGRID_API_KEY:-}
+      - SENDGRID_FROM_EMAIL=${SENDGRID_FROM_EMAIL:-noreply@vectra.io}
+      # External APIs
+      - ROCKETREACH_API_KEY=${ROCKETREACH_API_KEY:-}
+      - CALENDLY_API_KEY=${CALENDLY_API_KEY:-}
+      - HUBSPOT_API_KEY=${HUBSPOT_API_KEY:-}
+      # JWT
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-key-change-in-production}
+      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=${JWT_ACCESS_TOKEN_EXPIRE_MINUTES:-15}
+      - JWT_REFRESH_TOKEN_EXPIRE_DAYS=${JWT_REFRESH_TOKEN_EXPIRE_DAYS:-7}
+      # Platform
+      - PLATFORM_ADMIN_EMAIL=${PLATFORM_ADMIN_EMAIL:-admin@vectra.io}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+      - SECRET_KEY=${SECRET_KEY:-change-me-in-production}
+    healthcheck:
+      test: [ "CMD", "celery", "-A", "app.tasks.celery_app", "inspect", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    volumes:
+      - ./backend:/app
+      - /app/venv
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    command: celery -A app.tasks.celery_app worker --loglevel=INFO --concurrency=2
+    networks:
+      - vectra-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vectra-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/v1
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    depends_on:
+      - backend
+    command: npm run dev
+    networks:
+      - vectra-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+
+networks:
+  vectra-network:
+    driver: bridge

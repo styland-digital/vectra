@@ -1,0 +1,41 @@
+# Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.11.9
+pydantic-settings==2.10.1
+
+# Database
+sqlalchemy>=2.0.36
+asyncpg>=0.30.0
+alembic>=1.14.0
+psycopg[binary]>=3.2.0
+
+# Authentication
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.17
+email-validator>=2.0.0
+
+# Task Queue
+celery>=5.4.0
+redis>=5.2.0
+
+# AI/LLM
+crewai>=1.8.0
+ollama>=0.6.1
+
+# External APIs
+httpx>=0.28.0
+sendgrid>=6.11.0
+resend>=2.0.0
+
+# Utils
+python-dotenv>=1.0.1
+tenacity>=9.0.0
+jinja2>=3.1.0
+
+# Monitoring
+opentelemetry-api>=1.29.0
+opentelemetry-sdk>=1.29.0
+opentelemetry-instrumentation-fastapi>=0.50b0
+structlog>=24.4.0

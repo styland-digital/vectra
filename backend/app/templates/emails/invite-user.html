@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Invitation à rejoindre {{ organization_name }}</h1>
+
+<p>Bonjour{% if user_name %} {{ user_name }}{% endif %},</p>
+
+<p>{{ inviter_name }} vous invite à rejoindre <strong>{{ organization_name }}</strong> sur Vectra en tant que <strong>{{
+        role }}</strong>.</p>
+
+<p>Vectra est une plateforme SaaS d'agents IA pour automatiser la prospection B2B. En acceptant cette invitation, vous
+    pourrez collaborer avec votre équipe pour trouver, qualifier et contacter des prospects.</p>
+
+{% if otp %}
+<div
+    style="background-color: #F1F5F9; border: 2px solid #E2E8F0; border-radius: 8px; padding: 24px; margin: 32px 0; text-align: center;">
+    <p style="margin: 0 0 8px 0; font-size: 14px; color: #64748B; font-weight: 500;">Votre code d'invitation :</p>
+    <p
+        style="margin: 0; font-size: 32px; font-weight: 700; color: #0F172A; letter-spacing: 4px; font-family: 'Courier New', monospace;">
+        {{ otp }}</p>
+</div>
+
+<p style="font-size: 14px; color: #64748B; margin-top: 24px;">
+    Utilisez ce code pour accepter votre invitation sur la page suivante :
+</p>
+
+<div class="button-container">
+    <a href="{{ invitation_url }}" class="button">Accepter l'invitation</a>
+</div>
+{% else %}
+<div class="button-container">
+    <a href="{{ invitation_url }}" class="button">Accepter l'invitation</a>
+</div>
+{% endif %}
+
+<p style="font-size: 14px; color: #94A3B8; margin-top: 24px;">
+    {% if otp %}
+    Ce code d'invitation expire dans 7 jours.
+    {% else %}
+    Ce lien d'invitation expire dans 7 jours.
+    {% endif %}
+</p>
+
+<p style="font-size: 14px; color: #94A3B8;">
+    Si vous n'avez pas demandé cette invitation, vous pouvez ignorer cet email.
+</p>
+{% endblock %}

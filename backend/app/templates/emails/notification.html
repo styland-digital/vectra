@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title or "Notification Vectra" }}</h1>
+
+<p>Bonjour {{ user_name or "utilisateur" }},</p>
+
+{% if body_html %}
+{{ body_html | safe }}
+{% else %}
+<p>{{ body or "Vous avez reçu une nouvelle notification de Vectra." }}</p>
+{% endif %}
+
+{% if action_url and action_text %}
+<div class="button-container">
+    <a href="{{ action_url }}" class="button">{{ action_text }}</a>
+</div>
+{% endif %}
+
+{% if alert_type == "success" %}
+<div class="alert alert-success">
+    {{ alert_message or "" }}
+</div>
+{% elif alert_type == "warning" %}
+<div class="alert alert-warning">
+    {{ alert_message or "" }}
+</div>
+{% elif alert_type == "info" %}
+<div class="alert alert-info">
+    {{ alert_message or "" }}
+</div>
+{% endif %}
+{% endblock %}

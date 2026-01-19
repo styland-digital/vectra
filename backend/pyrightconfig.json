@@ -1,0 +1,21 @@
+{
+  "pythonVersion": "3.11",
+  "pythonPlatform": "All",
+  "root": ".",
+  "include": ["app", "tests", "alembic", "scripts"],
+  "exclude": ["venv", ".venv", "__pycache__", "**/__pycache__"],
+  "venvPath": ".",
+  "venv": "venv",
+  "typeCheckingMode": "basic",
+  "reportMissingImports": false,
+  "reportMissingTypeStubs": false,
+  "reportUnusedImport": true,
+  "reportUnusedVariable": true,
+  "executionEnvironments": [
+    {
+      "root": ".",
+      "pythonVersion": "3.11",
+      "extraPaths": ["."]
+    }
+  ]
+}
