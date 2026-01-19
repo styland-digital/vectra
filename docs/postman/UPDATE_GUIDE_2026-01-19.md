@@ -2,12 +2,14 @@
 
 ## 📋 Résumé des Changements
 
-La collection Postman doit être mise à jour pour inclure **27 nouveaux endpoints** :
+La collection Postman doit être mise à jour pour inclure **35 nouveaux endpoints** :
 
 - **1 nouveau endpoint Auth** : `/auth/invite/accept`
 - **9 endpoints User** : `/user/*` (organisations, utilisateurs)
 - **9 endpoints Admin** : `/admin/*` (platform admin)
 - **9 endpoints Campaigns** : `/user/campaigns/*`
+- **4 endpoints Leads** : `/user/leads/*` (liste, détails, interactions, mise à jour)
+- **4 endpoints Emails** : `/user/emails/*` (liste, détails, approbation, rejet)
 
 ---
 
@@ -215,7 +217,91 @@ Créer un nouveau dossier `Admin` avec 9 endpoints :
 
 ---
 
-### 4. Campaigns - Nouvelle Section
+### 4. Leads - Nouvelle Section
+
+Créer un nouveau dossier `Leads` sous `User`, avec 4 endpoints :
+
+#### GET /user/leads
+- **Method:** GET
+- **URL:** `{{base_url}}/api/v1/user/leads?campaign_id={{campaign_id}}&status=qualified&bant_score_min=60&search=VP`
+- **Auth:** Bearer {{access_token}}
+- **Response:** 200 - LeadListResponse (data, pagination)
+
+#### GET /user/leads/{lead_id}
+- **Method:** GET
+- **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}`
+- **Auth:** Bearer {{access_token}}
+- **Response:** 200 - LeadDetailResponse (avec interactions, emails, meetings)
+
+#### GET /user/leads/{lead_id}/interactions
+- **Method:** GET
+- **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}/interactions?skip=0&limit=100`
+- **Auth:** Bearer {{access_token}}
+- **Response:** 200 - InteractionListResponse
+
+#### PATCH /user/leads/{lead_id}
+- **Method:** PATCH
+- **URL:** `{{base_url}}/api/v1/user/leads/{{lead_id}}`
+- **Auth:** Bearer {{access_token}}
+- **Body:**
+```json
+{
+    "first_name": "Updated",
+    "last_name": "Name",
+    "phone": "+33612345678",
+    "status": "qualified",
+    "notes": "Updated notes"
+}
+```
+
+---
+
+### 5. Emails - Nouvelle Section
+
+Créer un nouveau dossier `Emails` sous `User`, avec 4 endpoints :
+
+#### GET /user/emails
+- **Method:** GET
+- **URL:** `{{base_url}}/api/v1/user/emails?campaign_id={{campaign_id}}&status=pending&skip=0&limit=100`
+- **Auth:** Bearer {{access_token}}
+- **Response:** 200 - EmailListResponse (data, pagination)
+
+#### GET /user/emails/{email_id}
+- **Method:** GET
+- **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}`
+- **Auth:** Bearer {{access_token}}
+- **Response:** 200 - EmailDetailResponse (avec tracking)
+
+#### POST /user/emails/{email_id}/approve
+- **Method:** POST
+- **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}/approve`
+- **Auth:** Bearer {{access_token}}
+- **Body:**
+```json
+{
+    "modifications": {
+        "subject": "Updated Subject (optional)",
+        "body_html": "<p>Updated body (optional)</p>"
+    }
+}
+```
+- **Response:** 200 - EmailApproveResponse
+
+#### POST /user/emails/{email_id}/reject
+- **Method:** POST
+- **URL:** `{{base_url}}/api/v1/user/emails/{{email_id}}/reject`
+- **Auth:** Bearer {{access_token}}
+- **Body:**
+```json
+{
+    "reason": "Email not suitable for this campaign"
+}
+```
+- **Response:** 200 - EmailDetailResponse (status: rejected)
+
+---
+
+### 6. Campaigns - Nouvelle Section
 
 Créer un nouveau dossier `Campaigns` sous `User` ou à la racine, avec 9 endpoints :
 
@@ -315,6 +401,8 @@ Dans `Vectra_Local_Environment.json`, ajouter :
 - [ ] Créer dossier `User` avec 9 endpoints
 - [ ] Créer dossier `Admin` avec 9 endpoints
 - [ ] Créer dossier `Campaigns` avec 9 endpoints
+- [ ] Créer dossier `Leads` avec 4 endpoints
+- [ ] Créer dossier `Emails` avec 4 endpoints
 - [ ] Mettre à jour variables d'environnement
 - [ ] Ajouter tests automatiques pour chaque endpoint
 - [ ] Vérifier que les tokens sont sauvegardés automatiquement
@@ -331,4 +419,6 @@ Dans `Vectra_Local_Environment.json`, ajouter :
 ---
 
 **Date de mise à jour:** 2026-01-19  
-**Version collection:** 2.0
+**Version collection:** 2.1
+
+**Note:** Guide mis à jour pour inclure les endpoints Leads et Emails (8 nouveaux endpoints).

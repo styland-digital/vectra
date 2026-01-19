@@ -1069,7 +1069,11 @@ Supprime (soft delete) une campagne.
 
 ## 8. ENDPOINTS - LEADS
 
-### GET /leads
+**Préfixe:** `/api/v1/user/leads/*`  
+**Authentification:** Requise (Bearer token)  
+**Isolation:** Multi-tenant (filtrage par `organization_id`)
+
+### GET /user/leads
 
 Liste les leads.
 
@@ -1186,7 +1190,7 @@ Retourne les détails complets d'un lead.
 
 ---
 
-### GET /leads/{id}/interactions
+### GET /user/leads/{id}/interactions
 
 Retourne l'historique des interactions d'un lead.
 
@@ -1225,7 +1229,7 @@ Retourne l'historique des interactions d'un lead.
 
 ---
 
-### PATCH /leads/{id}
+### PATCH /user/leads/{id}
 
 Met à jour un lead (manuel).
 
@@ -1247,7 +1251,11 @@ Met à jour un lead (manuel).
 
 ## 9. ENDPOINTS - EMAILS
 
-### GET /emails
+**Préfixe:** `/api/v1/user/emails/*`  
+**Authentification:** Requise (Bearer token)  
+**Isolation:** Multi-tenant (filtrage par `organization_id`)
+
+### GET /user/emails
 
 Liste les emails.
 
@@ -1284,7 +1292,7 @@ Liste les emails.
 
 ---
 
-### GET /emails/{id}
+### GET /user/emails/{id}
 
 Retourne les détails complets d'un email.
 
@@ -1325,7 +1333,7 @@ Retourne les détails complets d'un email.
 
 ---
 
-### POST /emails/{id}/approve
+### POST /user/emails/{id}/approve
 
 Approuve un email pour envoi.
 
@@ -1357,7 +1365,7 @@ Approuve un email pour envoi.
 
 ---
 
-### POST /emails/{id}/reject
+### POST /user/emails/{id}/reject
 
 Rejette un email.
 
