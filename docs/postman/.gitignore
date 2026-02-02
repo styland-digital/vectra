@@ -1,0 +1,5 @@
+# Fichiers temporaires Postman (non nécessaires en Git)
+*.tmp
+*.bak
+
+# Note: Les fichiers JSON (collection et environnement) sont versionnés

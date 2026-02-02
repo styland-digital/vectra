@@ -1,0 +1,1101 @@
+{
+	"info": {
+		"_postman_id": "vectra-api-collection-2026",
+		"name": "Vectra API Collection",
+		"description": "Collection complète pour l'API Vectra - AI Agents pour Ventes B2B\n\nBase URL: http://localhost:8000\n\nAuthentification: Bearer Token JWT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "vectra"
+	},
+	"item": [
+		{
+			"name": "🔍 Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check API health status"
+					},
+					"response": []
+				},
+				{
+					"name": "API Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/docs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"docs"
+							]
+						},
+						"description": "OpenAPI documentation (Swagger UI)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extract and save access token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.environment.set(\"accessToken\", response.access_token);",
+									"        pm.environment.set(\"refreshToken\", response.refresh_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@acme.com\",\n  \"password\": \"SecurePass123!\",\n  \"full_name\": \"John Doe\",\n  \"organization_name\": \"Acme Corp\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register new user and organization"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Extract and save access token",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.access_token) {",
+									"        pm.environment.set(\"accessToken\", response.access_token);",
+									"        pm.environment.set(\"refreshToken\", response.refresh_token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "john.doe@acme.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "SecurePass123!",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"me"
+							]
+						},
+						"description": "Get current authenticated user information"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📊 Analytics",
+			"item": [
+				{
+					"name": "Dashboard Overview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/analytics/overview",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"analytics",
+								"overview"
+							]
+						},
+						"description": "Get comprehensive dashboard overview with KPIs"
+					},
+					"response": []
+				},
+				{
+					"name": "Usage Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/analytics/usage?days=30",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"analytics",
+								"usage"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30",
+									"description": "Period in days (7, 30, 365)"
+								}
+							]
+						},
+						"description": "Get usage metrics (campaigns, leads, emails, qualification rates)"
+					},
+					"response": []
+				},
+				{
+					"name": "Engagement Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/analytics/engagement?days=30",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"analytics",
+								"engagement"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Get user engagement metrics (activity rates, role distribution)"
+					},
+					"response": []
+				},
+				{
+					"name": "AI Agent Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/analytics/ai-agents?days=30",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"analytics",
+								"ai-agents"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Get AI agent performance metrics (success rates, runs)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "💳 Billing & Stripe",
+			"item": [
+				{
+					"name": "Get Plans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/billing/plans",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"billing",
+								"plans"
+							]
+						},
+						"description": "Get available subscription plans (Starter €99, Growth €299, Scale €799)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Checkout Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"plan_type\": \"growth\",\n  \"success_url\": \"http://localhost:3000/billing/success\",\n  \"cancel_url\": \"http://localhost:3000/pricing\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/billing/create-checkout-session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"billing",
+								"create-checkout-session"
+							]
+						},
+						"description": "Create Stripe checkout session for subscription"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Portal Session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/billing/create-portal-session",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"billing",
+								"create-portal-session"
+							]
+						},
+						"description": "Create Stripe customer portal session for subscription management"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Session",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/billing/session/cs_test_SESSION_ID",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"billing",
+								"session",
+								"cs_test_SESSION_ID"
+							]
+						},
+						"description": "Get Stripe checkout session details"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏢 Organization Management",
+			"item": [
+				{
+					"name": "Get Organization",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/organizations/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"organizations",
+								"me"
+							]
+						},
+						"description": "Get current user's organization details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Organization",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Acme Corp Updated\",\n  \"domain\": \"acme.com\",\n  \"industry\": \"Technology\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/organizations/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"organizations",
+								"me"
+							]
+						},
+						"description": "Update organization details (Owner/Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "List Organization Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/organizations/me/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"organizations",
+								"me",
+								"users"
+							]
+						},
+						"description": "List all users in current organization"
+					},
+					"response": []
+				},
+				{
+					"name": "Invite User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jane.smith@acme.com\",\n  \"role\": \"manager\",\n  \"full_name\": \"Jane Smith\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/organizations/me/users/invite",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"organizations",
+								"me",
+								"users",
+								"invite"
+							]
+						},
+						"description": "Invite user to organization with specific role (Owner/Admin only)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🎯 Campaigns",
+			"item": [
+				{
+					"name": "List Campaigns",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/campaigns?limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"campaigns"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "List campaigns with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Campaign",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Q1 Enterprise Outreach\",\n  \"description\": \"Target enterprise prospects in tech industry\",\n  \"target_criteria\": {\n    \"job_titles\": [\"CTO\", \"VP Engineering\", \"Head of Technology\"],\n    \"industries\": [\"Technology\", \"SaaS\"],\n    \"company_size\": \"100-1000\",\n    \"locations\": [\"France\", \"UK\", \"Germany\"]\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/campaigns",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"campaigns"
+							]
+						},
+						"description": "Create new campaign with targeting criteria"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/campaigns/{{campaignId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"campaigns",
+								"{{campaignId}}"
+							]
+						},
+						"description": "Get specific campaign by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Campaign",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Q1 Enterprise Outreach - Updated\",\n  \"description\": \"Updated description\",\n  \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/campaigns/{{campaignId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"campaigns",
+								"{{campaignId}}"
+							]
+						},
+						"description": "Update campaign details"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👥 Leads",
+			"item": [
+				{
+					"name": "List Leads",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/leads?campaign_id={{campaignId}}&limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"leads"
+							],
+							"query": [
+								{
+									"key": "campaign_id",
+									"value": "{{campaignId}}"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "List leads, optionally filtered by campaign"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lead",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"campaign_id\": \"{{campaignId}}\",\n  \"email\": \"prospect@company.com\",\n  \"first_name\": \"John\",\n  \"last_name\": \"Prospect\",\n  \"company\": \"Target Company\",\n  \"job_title\": \"CTO\",\n  \"linkedin_url\": \"https://linkedin.com/in/johnprospect\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/leads",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"leads"
+							]
+						},
+						"description": "Create new lead in campaign"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lead",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/leads/{{leadId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"leads",
+								"{{leadId}}"
+							]
+						},
+						"description": "Get specific lead with BANT score and enrichment data"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📧 Emails",
+			"item": [
+				{
+					"name": "List Emails",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/emails?lead_id={{leadId}}&limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"emails"
+							],
+							"query": [
+								{
+									"key": "lead_id",
+									"value": "{{leadId}}"
+								},
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "List emails, optionally filtered by lead"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"lead_id\": \"{{leadId}}\",\n  \"subject\": \"Exclusive AI Solution for Target Company\",\n  \"content\": \"Hi John,\\n\\nI noticed Target Company is expanding rapidly. Our AI agents could help streamline your sales process...\\n\\nBest regards\",\n  \"email_type\": \"initial_outreach\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/emails",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"emails"
+							]
+						},
+						"description": "Create new email for lead"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/user/emails/{{emailId}}/send",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"emails",
+								"{{emailId}}",
+								"send"
+							]
+						},
+						"description": "Send approved email to lead"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "⚙️ Platform Admin",
+			"item": [
+				{
+					"name": "Platform Overview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{platformAdminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/overview",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"overview"
+							]
+						},
+						"description": "Get platform-wide overview (PLATFORM_ADMIN only)"
+					},
+					"response": []
+				},
+				{
+					"name": "List All Organizations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{platformAdminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/organizations?limit=50&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"organizations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "List all organizations on platform (PLATFORM_ADMIN only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Platform Revenue",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{platformAdminToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/analytics/revenue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"analytics",
+								"revenue"
+							]
+						},
+						"description": "Get platform-wide revenue metrics (PLATFORM_ADMIN only)"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Set dynamic timestamps",
+					"pm.environment.set(\"timestamp\", new Date().toISOString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"if (pm.response.code >= 400) {",
+					"    console.log(\"Error response:\", pm.response.text());",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "platformAdminToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "campaignId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "leadId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "emailId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

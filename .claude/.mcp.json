@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "."],
+      "autoApprove": ["list_directory", "read_file"]
+    }
+  },
+  "disabledMcpServers": [
+    "github",
+    "postgres",
+    "slack"
+  ]
+}

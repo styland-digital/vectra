@@ -1,0 +1,150 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(git *)",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(uv *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Bash(alembic *)",
+      "Bash(docker *)",
+      "Bash(curl *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(./secrets/**)",
+      "Read(**/*secret*)",
+      "Read(**/*password*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf .)",
+      "Bash(*DROP TABLE*)",
+      "Bash(*DELETE FROM*)"
+    ]
+  },
+  "model": "claude-sonnet-4-20250514",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "branch=$(git branch --show-current 2>/dev/null); [ \"$branch\" != \"main\" ] && [ \"$branch\" != \"master\" ] || { echo '{\"block\": true, \"message\": \"❌ Cannot edit on main/master branch. Run: git checkout -b feature/your-feature\"}' >&2; exit 2; }",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd backend 2>/dev/null && uv run pytest -q --tb=no || { echo '{\"block\": true, \"message\": \"❌ Tests failing. Fix tests before pushing.\"}' >&2; exit 2; }",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.py)|Edit(*.py)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd backend 2>/dev/null && uv run ruff format \"$CLAUDE_FILE\" 2>/dev/null && uv run ruff check --fix \"$CLAUDE_FILE\" 2>/dev/null; exit 0",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.ts)|Write(*.tsx)|Edit(*.ts)|Edit(*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd frontend 2>/dev/null && npx prettier --write \"$CLAUDE_FILE\" 2>/dev/null && npx eslint --fix \"$CLAUDE_FILE\" 2>/dev/null; exit 0",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Write(**/test_*.py)|Edit(**/test_*.py)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd backend 2>/dev/null && uv run pytest \"$CLAUDE_FILE\" -v --tb=short 2>&1 | head -50; exit 0",
+            "timeout": 120
+          }
+        ]
+      },
+      {
+        "matcher": "Write(**/*.spec.ts)|Write(**/*.spec.tsx)|Edit(**/*.spec.ts)|Edit(**/*.spec.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd frontend 2>/dev/null && npm run test -- --run \"$CLAUDE_FILE\" 2>&1 | head -30; exit 0",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 VECTRA Development Session' && echo '─────────────────────────────' && git branch --show-current 2>/dev/null | xargs -I{} echo '📍 Branch: {}' && git status --short 2>/dev/null | head -5",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✅ Session complete. Remember to commit your changes!'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true
+  },
+  "mcpServers": {
+    "filesystem": {
+      "autoApprove": [
+        "list_directory",
+        "read_file"
+      ]
+    }
+  }
+}

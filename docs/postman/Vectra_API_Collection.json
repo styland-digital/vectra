@@ -1,0 +1,506 @@
+{
+    "info": {
+        "_postman_id": "vectra-api-collection-v1",
+        "name": "Vectra API Collection",
+        "description": "Collection complète pour tester les APIs Vectra - Plateforme SaaS d'agents IA pour automatiser la prospection B2B",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "vectra-api"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Register",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.environment.set(\"access_token\", response.access_token);",
+                                    "    pm.environment.set(\"refresh_token\", response.refresh_token);",
+                                    "    pm.environment.set(\"user_id\", response.user.id);",
+                                    "    if (response.user.organization) {",
+                                    "        pm.environment.set(\"organization_id\", response.user.organization.id);",
+                                    "    }",
+                                    "    ",
+                                    "    pm.test(\"Status code is 201\", function () {",
+                                    "        pm.response.to.have.status(201);",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has access_token\", function () {",
+                                    "        pm.expect(response).to.have.property(\"access_token\");",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has refresh_token\", function () {",
+                                    "        pm.expect(response).to.have.property(\"refresh_token\");",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has user object\", function () {",
+                                    "        pm.expect(response).to.have.property(\"user\");",
+                                    "        pm.expect(response.user).to.have.property(\"email\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{test_email}}\",\n    \"password\": \"password123\",\n    \"first_name\": \"Test\",\n    \"last_name\": \"User\",\n    \"organization_name\": \"Test Organization\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "description": "Register a new user with a new organization.\n\nCreates organization and user as owner.\nReturns access token, refresh token, and user info."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.environment.set(\"access_token\", response.access_token);",
+                                    "    pm.environment.set(\"refresh_token\", response.refresh_token);",
+                                    "    pm.environment.set(\"user_id\", response.user.id);",
+                                    "    if (response.user.organization) {",
+                                    "        pm.environment.set(\"organization_id\", response.user.organization.id);",
+                                    "    }",
+                                    "    ",
+                                    "    pm.test(\"Status code is 200\", function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has access_token\", function () {",
+                                    "        pm.expect(response).to.have.property(\"access_token\");",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has refresh_token\", function () {",
+                                    "        pm.expect(response).to.have.property(\"refresh_token\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "urlencoded",
+                            "urlencoded": [
+                                {
+                                    "key": "username",
+                                    "value": "{{test_email}}",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "password123",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "description": "Login with email and password.\n\nOAuth2 compatible (uses form data with username field for email).\nReturns access token, refresh token, and user info."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.environment.set(\"access_token\", response.access_token);",
+                                    "    ",
+                                    "    pm.test(\"Status code is 200\", function () {",
+                                    "        pm.response.to.have.status(200);",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has new access_token\", function () {",
+                                    "        pm.expect(response).to.have.property(\"access_token\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refresh_token\": \"{{refresh_token}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/refresh",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "refresh"
+                            ]
+                        },
+                        "description": "Refresh access token using refresh token.\n\nReturns new access token (refresh token remains unchanged)."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get Current User (Me)",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    ",
+                                    "    pm.test(\"Response has user email\", function () {",
+                                    "        pm.expect(response).to.have.property(\"email\");",
+                                    "    });",
+                                    "    ",
+                                    "    pm.test(\"Response has user id\", function () {",
+                                    "        pm.expect(response).to.have.property(\"id\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/user/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "user",
+                                "me"
+                            ]
+                        },
+                        "description": "Get current authenticated user profile."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Change Password",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 204\", function () {",
+                                    "    pm.response.to.have.status(204);",
+                                    "});"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"current_password\": \"password123\",\n    \"new_password\": \"newpassword456\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/change-password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "change-password"
+                            ]
+                        },
+                        "description": "Change current user's password."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Logout",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 204\", function () {",
+                                    "    pm.response.to.have.status(204);",
+                                    "});",
+                                    "",
+                                    "// Note: In stateless auth, tokens remain valid after logout",
+                                    "// Client should discard tokens"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/logout",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "logout"
+                            ]
+                        },
+                        "description": "Logout current user.\n\nClient should discard tokens. Server-side token blacklisting can be implemented with Redis if needed."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Verify Email",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    ",
+                                    "    pm.test(\"Response has success message\", function () {",
+                                    "        pm.expect(response).to.have.property(\"message\");",
+                                    "        pm.expect(response.message).to.include(\"verified\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{test_email}}\",\n    \"otp\": \"{{verification_otp}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/verify-email",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "verify-email"
+                            ]
+                        },
+                        "description": "Verify user email with 6-digit OTP.\n\nOTP is sent via email after registration or when requesting verification email. Expires in 10 minutes."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Send Verification Email",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    ",
+                                    "    pm.test(\"Response has message\", function () {",
+                                    "        pm.expect(response).to.have.property(\"message\");",
+                                    "    });",
+                                    "    ",
+                                    "    // Note: Always returns success for security (don't reveal if email exists)",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"{{test_email}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/send-verification-email",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "send-verification-email"
+                            ]
+                        },
+                        "description": "Send verification email to user.\n\nNote: Always returns success for security (don't reveal if email exists).\nEmail is sent via Resend if API key is configured."
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Resend Verification Email",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    ",
+                                    "    pm.test(\"Response has success message\", function () {",
+                                    "        pm.expect(response).to.have.property(\"message\");",
+                                    "        pm.expect(response.message).to.include(\"sent\");",
+                                    "    });",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/v1/auth/resend-verification-email",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "auth",
+                                "resend-verification-email"
+                            ]
+                        },
+                        "description": "Resend verification email to current authenticated user.\n\nRequires authentication. Email is sent via Resend if API key is configured."
+                    },
+                    "response": []
+                }
+            ],
+            "description": "Endpoints d'authentification JWT"
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        }
+    ]
+}

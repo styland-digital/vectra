@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="font-size: 24px; font-weight: 600; margin: 0 0 16px; text-align: left; color: #1C1F26;">Verify your email</h1>
+
+<p style="color: #1C1F26; font-size: 16px; line-height: 1.5; margin: 0 0 24px; text-align: left;">
+    We need to verify your email address <strong style="color: #2E5BFF;">{{ to }}</strong> before you can access your account. Enter the code below in your open browser window.
+</p>
+
+<div style="font-size: 48px; font-weight: 700; letter-spacing: 8px; margin: 32px 0; text-align: left; color: #1C1F26; font-family: 'Monaco', 'Menlo', 'Courier New', monospace;">
+    {{ otp }}
+</div>
+
+<hr style="border: none; border-top: 1px solid #E2E8F0; margin: 24px 0;" />
+
+<p style="color: #5F6470; font-size: 14px; line-height: 1.5; margin: 0 0 8px; text-align: left;">
+    This code expires in 10 minutes.
+</p>
+
+<p style="color: #5F6470; font-size: 14px; line-height: 1.5; margin: 0; text-align: left;">
+    If you didn't sign up for Vectra, you can safely ignore this email. Someone else might have typed your email address by mistake.
+</p>
+{% endblock %}
