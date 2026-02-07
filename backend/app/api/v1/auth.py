@@ -63,8 +63,9 @@ def login(
             id=user.organization.id,
             name=user.organization.name,
             slug=user.organization.slug,
+            plan=user.organization.plan.value if user.organization.plan else "starter",
         )
-    
+
     user_response = UserWithOrgResponse(
         id=user.id,
         email=user.email,
@@ -144,8 +145,9 @@ def register(
             id=user.organization.id,
             name=user.organization.name,
             slug=user.organization.slug,
+            plan=user.organization.plan.value if user.organization.plan else "starter",
         )
-    
+
     user_response = UserWithOrgResponse(
         id=user.id,
         email=user.email,
@@ -323,8 +325,9 @@ def accept_invitation(
             id=user.organization.id,
             name=user.organization.name,
             slug=user.organization.slug,
+            plan=user.organization.plan.value if user.organization.plan else "starter",
         )
-    
+
     user_response = UserWithOrgResponse(
         id=user.id,
         email=user.email,
@@ -335,7 +338,7 @@ def accept_invitation(
         created_at=user.created_at,
         organization=org_response,
     )
-    
+
     return LoginResponse(
         access_token=access_token,
         refresh_token=refresh_token,

@@ -369,12 +369,27 @@
   /* Card hover effects */
   .card-hover {
     transition: border-color var(--duration-200) var(--ease-out),
-                box-shadow var(--duration-200) var(--ease-out);
+                box-shadow var(--duration-200) var(--ease-out),
+                transform var(--duration-200) var(--ease-out);
   }
 
   .card-hover:hover {
     border-color: var(--border-hover);
     box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  /* Interactive card (elevation + border on hover) */
+  .interactive-card {
+    transition: border-color var(--duration-200) var(--ease-out),
+                box-shadow var(--duration-200) var(--ease-out),
+                transform var(--duration-200) var(--ease-out);
+  }
+
+  .interactive-card:hover {
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
   }
 }
 

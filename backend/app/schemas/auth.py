@@ -39,6 +39,7 @@ class OrganizationResponse(BaseModel):
     id: UUID
     name: str
     slug: str
+    plan: str = "starter"
 
     class Config:
         from_attributes = True

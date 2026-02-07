@@ -1,173 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "mcp__plugin_context7_context7__resolve-library-id",
-      "WebSearch",
-      "Bash(.venvScriptspip.exe install -r requirements.txt)",
-      "Bash(./venv/Scripts/pip.exe install:*)",
-      "Bash(./venv/Scripts/python.exe:*)",
-      "Bash(pnpm dev)",
-      "Bash(./venv/Scripts/uvicorn.exe:*)",
-      "Bash(docker-compose up:*)",
-      "Bash(./venv/Scripts/alembic.exe upgrade:*)",
-      "Bash(docker exec:*)",
-      "Bash(.venvScriptspython.exe -c \"from app.db.base import Base, BaseModel; print\\(''Base OK''\\)\")",
-      "Bash(.venvScriptspython.exe -c \"from app.core.security import create_access_token, decode_token; print\\(''Security OK''\\)\")",
-      "Bash(.venvScriptspython.exe -c \"from app.api.deps import get_db, oauth2_scheme; print\\(''Deps OK''\\)\")",
-      "Bash(docker ps:*)",
-      "Bash(./venv/Scripts/celery.exe:*)",
-      "Bash(ls -la \"D:\\\\2026\\\\SaaS Agent IA\\\\vectra\\\\backend\\\\tests\"\" && find \"D:2026SaaS Agent IAvectrabackend \" -type d -name tests -o -name test)",
-      "Read",
-      "Write",
-      "Edit",
-      "Bash(cd *)",
-      "Bash(ls *)",
-      "Bash(cat *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(grep *)",
-      "Bash(find *)",
-      "Bash(git *)",
-      "Bash(npm *)",
-      "Bash(npx *)",
-      "Bash(uv *)",
-      "Bash(python *)",
-      "Bash(pytest *)",
-      "Bash(alembic *)",
-      "Bash(docker *)",
-      "Bash(curl *)",
-      "Bash(test:*)",
-      "Bash(node --version:*)",
-      "Bash(docker-compose:*)",
-      "Bash(python3.11:*)",
-      "Bash(make:*)",
-      "Bash(source:*)",
-      "Bash(pip install:*)",
-      "Bash(python3.12:*)",
-      "Bash(python3.10:*)",
-      "Bash(where:*)",
-      "Bash(..\\\\.venvScriptsactivate)",
-      "Bash(\".venv/Scripts/python.exe\" --version)",
-      "Bash(py:*)",
-      "Bash(..\\\\venv_new\\\\Scripts\\\\python.exe --version)",
-      "Bash(\"./venv_new/Scripts/python.exe\" --version)",
-      "Bash(\"../venv_new/Scripts/python.exe\" -m pip install -r requirements.txt)",
-      "Bash(\"../venv_new/Scripts/python.exe\" -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000)",
-      "Bash(\"./venv_new/Scripts/pip.exe\" install uvicorn)",
-      "Bash(\"../venv_new/Scripts/uvicorn.exe\" app.main:app --reload --host 0.0.0.0 --port 8000)",
-      "Bash(\"./venv_new/Scripts/pip.exe\" install psycopg2-binary)"
-    ],
-    "deny": [
-      "Read(.env)",
-      "Read(.env.*)",
-      "Read(./secrets/**)",
-      "Read(**/*secret*)",
-      "Read(**/*password*)",
-      "Write(.env)",
-      "Write(.env.*)",
-      "Bash(rm -rf /)",
-      "Bash(rm -rf ~)",
-      "Bash(rm -rf .)",
-      "Bash(*DROP TABLE*)",
-      "Bash(*DELETE FROM*)"
+      "Bash(python -c \"\ncontent = ''''''\"\"use client\"\"\n\nimport { Formik, Form, Field } from ''formik''\nimport { useState } from ''react''\nimport { useRouter } from ''next/navigation''\nimport Link from ''next/link''\nimport { Eye, EyeOff, Mail, Lock, User, Building2, AlertCircle } from ''lucide-react''\n\nimport { Button } from ''@/components/ui/button''\nimport { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from ''@/components/ui/card''\nimport { Input } from ''@/components/ui/input''\nimport { Label } from ''@/components/ui/label''\nimport { Alert, AlertDescription } from ''@/components/ui/alert''\nimport { Checkbox } from ''@/components/ui/checkbox''\nimport { useAuthStore } from ''@/lib/stores/auth''\nimport { registerSchema, type RegisterFormData } from ''@/lib/schemas/auth''\n\nexport default function RegisterPage\\(\\) {\n  const [showPassword, setShowPassword] = useState\\(false\\)\n  const router = useRouter\\(\\)\n  const { register, isLoading, error, clearError } = useAuthStore\\(\\)\n\n  const initialValues = {\n    firstName: '''',\n    lastName: '''',\n    email: '''',\n    companyName: '''',\n    password: '''',\n    confirmPassword: '''',\n    terms: false,\n  }\n\n  return \\(\n    <div className=\"\"flex flex-col space-y-6 text-center\"\">\n      <div className=\"\"flex flex-col space-y-2\"\">\n        <h1 className=\"\"text-2xl font-semibold tracking-tight text-foreground\"\">\n          Create Your Vectra Account\n        </h1>\n        <p className=\"\"text-sm text-muted-foreground\"\">\n          Start automating your B2B sales pipeline with AI\n        </p>\n      </div>\n      \n      <Card className=\"\"w-full max-w-md mx-auto\"\">\n        <CardHeader>\n          <CardTitle>Sign Up</CardTitle>\n          <CardDescription>Join thousands using Vectra AI</CardDescription>\n        </CardHeader>\n        <CardContent>\n          <p>Registration form will be implemented here</p>\n        </CardContent>\n      </Card>\n    </div>\n  \\)\n}''''''\n\nwith open\\(''app/\\(auth\\)/register/page.tsx'', ''w''\\) as f:\n    f.write\\(content\\)\nprint\\(''File created successfully''\\)\n\")",
+      "Bash(wc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)",
+      "Bash(find \"D:\\\\Projects\\\\2026\\\\vectra\\\\frontend\\\\app\\\\\\(dashboard\\)\" -type f -name \"page.tsx\")",
+      "Bash(ls:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(uv run uvicorn:*)",
+      "Bash(npm run dev:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv add:*)",
+      "Bash(uv pip install:*)",
+      "Bash(source ../venv_new/Scripts/activate)",
+      "Bash(python -m pytest:*)",
+      "Bash(curl:*)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npm install:*)"
     ]
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "branch=$(git branch --show-current 2>/dev/null); [ \"$branch\" != \"main\" ] && [ \"$branch\" != \"master\" ] || { echo '{\"block\": true, \"message\": \"❌ Cannot edit on main/master branch. Run: git checkout -b feature/your-feature\"}' >&2; exit 2; }",
-            "timeout": 5
-          }
-        ]
-      },
-      {
-        "matcher": "Bash(git push*)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd backend 2>/dev/null && uv run pytest -q --tb=no || { echo '{\"block\": true, \"message\": \"❌ Tests failing. Fix tests before pushing.\"}' >&2; exit 2; }",
-            "timeout": 120
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Write(*.py)|Edit(*.py)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd backend 2>/dev/null && uv run ruff format \"$CLAUDE_FILE\" 2>/dev/null && uv run ruff check --fix \"$CLAUDE_FILE\" 2>/dev/null; exit 0",
-            "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "Write(*.ts)|Write(*.tsx)|Edit(*.ts)|Edit(*.tsx)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd frontend 2>/dev/null && npx prettier --write \"$CLAUDE_FILE\" 2>/dev/null && npx eslint --fix \"$CLAUDE_FILE\" 2>/dev/null; exit 0",
-            "timeout": 30
-          }
-        ]
-      },
-      {
-        "matcher": "Write(**/test_*.py)|Edit(**/test_*.py)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd backend 2>/dev/null && uv run pytest \"$CLAUDE_FILE\" -v --tb=short 2>&1 | head -50; exit 0",
-            "timeout": 120
-          }
-        ]
-      },
-      {
-        "matcher": "Write(**/*.spec.ts)|Write(**/*.spec.tsx)|Edit(**/*.spec.ts)|Edit(**/*.spec.tsx)",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "cd frontend 2>/dev/null && npm run test -- --run \"$CLAUDE_FILE\" 2>&1 | head -30; exit 0",
-            "timeout": 60
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '🚀 VECTRA Development Session' && echo '─────────────────────────────' && git branch --show-current 2>/dev/null | xargs -I{} echo '📍 Branch: {}' && git status --short 2>/dev/null | head -5",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": ".*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '✅ Session complete. Remember to commit your changes!'",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  },
-  "mcpServers": {
-    "filesystem": {
-      "autoApprove": [
-        "list_directory",
-        "read_file"
-      ]
-    }
   }
 }
