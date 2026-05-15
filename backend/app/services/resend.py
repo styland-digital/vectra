@@ -260,35 +260,24 @@ def send_email(
         if text_content:
             params["text"] = text_content
         
-        # Send email (Emails is a class, we need to instantiate it)
-        emails = resend.Emails()
-        response = emails.send(params)
-        
+        # resend v2 SDK: class method, not instance
+        response = resend.Emails.send(params)
+
+        email_id = response.get("id") if isinstance(response, dict) else getattr(response, "id", None)
         logger.info(
             "Email sent via Resend",
-            extra={
-                "to": to,
-                "subject": subject,
-                "email_id": response.get("id"),
-            }
+            extra={"to": to, "subject": subject, "email_id": email_id},
         )
-        
-        return {
-            "id": response.get("id"),
-            "success": True,
-        }
-        
+
+        return {"id": email_id, "success": True}
+
     except Exception as e:
+        err_msg = str(e)
         logger.error(
             "Failed to send email via Resend",
-            extra={
-                "to": to,
-                "subject": subject,
-                "error": str(e),
-            },
-            exc_info=True,
+            extra={"to": to, "subject": subject, "error": err_msg},
         )
-        raise BadRequestError(f"Failed to send email: {str(e)}")
+        raise BadRequestError(f"Failed to send email: {err_msg}")
 
 
 def send_verification_email(

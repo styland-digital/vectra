@@ -23,14 +23,16 @@ class BANTScoringService:
             Tuple of (score, reasoning)
         """
         if not company_size:
-            return (5, "Taille entreprise inconnue")
-        
+            # When size is unknown the lead came from a size-filtered search
+            # (RocketReach search API already applied the filter) — give a PME default.
+            return (13, "Taille entreprise non renseignée (PME estimée)")
+
         size_str = str(company_size).lower()
-        
+
         # Extract numbers
         numbers = re.findall(r'\d+', size_str)
         if not numbers:
-            return (5, "Taille entreprise non analysable")
+            return (13, "Taille entreprise non analysable (PME estimée)")
         
         max_size = max(int(n) for n in numbers)
         
@@ -103,16 +105,22 @@ class BANTScoringService:
             score += 5
         
         if enrichment_data:
-            raw_data = enrichment_data.get("raw_data", {})
-            
-            # Check for signals in enrichment data
-            if raw_data.get("current_employer_size"):
+            # Support both nested raw_data wrapper (legacy) and flat RocketReach profiles
+            raw_data = enrichment_data.get("raw_data") or enrichment_data
+
+            if raw_data.get("current_employer_size") or raw_data.get("company_size"):
                 signals.append("Données entreprise disponibles")
                 score += 5
-            
-            if raw_data.get("seniority_level"):
+
+            if raw_data.get("seniority_level") or raw_data.get("seniority"):
                 signals.append("Niveau seniorité identifié")
                 score += 3
+
+            # LinkedIn connections: active professional network
+            connections = raw_data.get("connections")
+            if connections and int(connections) > 200:
+                signals.append("Réseau LinkedIn actif")
+                score += 5
         
         if score >= 20:
             return (20, "Signaux forts: " + ", ".join(signals))
@@ -144,10 +152,11 @@ class BANTScoringService:
             score += 3  # Profile exists
         
         if enrichment_data:
-            raw_data = enrichment_data.get("raw_data", {})
-            if raw_data.get("updated_at"):
+            # Support both nested raw_data wrapper (legacy) and flat RocketReach profiles
+            raw_data = enrichment_data.get("raw_data") or enrichment_data
+            # RocketReach uses "update_time"; legacy uses "updated_at"
+            if raw_data.get("update_time") or raw_data.get("updated_at"):
                 score += 5
-                return (15, "Profil LinkedIn récemment mis à jour")
         
         if score >= 15:
             return (15, "Activité récente détectée")

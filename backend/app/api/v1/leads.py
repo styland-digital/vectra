@@ -73,15 +73,23 @@ def list_leads(
             # Remove None values
             company_info = {k: v for k, v in company_info.items() if v is not None} or None
         
-        # Extract BANT info
+        # Extract BANT info — each breakdown component is {"score": int, "reasoning": str}
         bant_info = None
         if lead.bant_score is not None:
+            bd = lead.bant_breakdown or {}
+
+            def _bant_score(key: str) -> Optional[int]:
+                val = bd.get(key)
+                if isinstance(val, dict):
+                    return val.get("score")
+                return val  # already an int (legacy format)
+
             bant_info = {
                 "score": lead.bant_score,
-                "budget": lead.bant_breakdown.get("budget") if lead.bant_breakdown else None,
-                "authority": lead.bant_breakdown.get("authority") if lead.bant_breakdown else None,
-                "need": lead.bant_breakdown.get("need") if lead.bant_breakdown else None,
-                "timeline": lead.bant_breakdown.get("timeline") if lead.bant_breakdown else None,
+                "budget": _bant_score("budget"),
+                "authority": _bant_score("authority"),
+                "need": _bant_score("need"),
+                "timeline": _bant_score("timeline"),
                 "notes": lead.enrichment_data.get("notes") if lead.enrichment_data else None,
             }
             bant_info = {k: v for k, v in bant_info.items() if v is not None} or None

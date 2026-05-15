@@ -136,7 +136,7 @@ class ProspectorAgent(BaseVectraAgent):
                     campaign_id=UUID(campaign_id),
                     organization_id=UUID(organization_id),
                     target_criteria=target_criteria,
-                    enrich=True,
+                    enrich=False,  # lookup costs credits; search data is enough for prospecting
                 )
             else:
                 # Without DB, just score them manually
@@ -150,11 +150,13 @@ class ProspectorAgent(BaseVectraAgent):
                     prospect["firmographic_score"] = score
                     processed_prospects.append(prospect)
             
-            # Step 3: Filter and sort by score
-            qualified_prospects = [
-                p for p in processed_prospects
-                if p.get("firmographic_score", 0) >= 50  # Minimum threshold
-            ]
+            # Step 3: Sort by score — RocketReach already filtered by criteria,
+            # so we keep all prospects and let BANT handle the real qualification.
+            qualified_prospects = sorted(
+                processed_prospects,
+                key=lambda p: p.get("firmographic_score", 0),
+                reverse=True,
+            )
             
             # Step 4: Use LLM to analyze top prospects if enabled
             # For now, we'll skip LLM analysis and rely on firmographic scoring

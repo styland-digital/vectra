@@ -22,6 +22,7 @@ redis>=5.2.0
 
 # AI/LLM
 crewai>=1.8.0
+anthropic>=0.40.0
 ollama>=0.6.1
 
 # External APIs

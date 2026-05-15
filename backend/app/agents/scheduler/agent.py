@@ -90,8 +90,8 @@ class SchedulerAgent(BaseVectraAgent):
                 lead_name=lead_name if lead_name else None,
             )
             
-            # Generate email content
-            email_content = self.email_generator.generate_email(
+            # Generate email content (async to avoid blocking the event loop)
+            email_content = await self.email_generator.generate_email_async(
                 lead_data=lead_data,
                 campaign=campaign,
                 calendly_url=calendly_url,

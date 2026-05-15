@@ -42,6 +42,11 @@ Entreprise: {sender.company}
 - Langue: Français
 - Inclure une seule question
 - CTA clair avec proposition de créneau
+- ABSOLUMENT INTERDIT: emojis, symboles décoratifs (★, ✓, →, etc.)
+- ABSOLUMENT INTERDIT: titres en majuscules, listes à puces, formatage markdown
+- ABSOLUMENT INTERDIT: balises HTML, couleurs, gras excessif
+- Corps de l'email: texte brut, paragraphes simples uniquement
+- Le rendu final doit être identique à un email professionnel rédigé manuellement
 
 [FORMAT DE SORTIE]
 {{

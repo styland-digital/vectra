@@ -83,6 +83,7 @@ class BANTAgent(BaseVectraAgent):
             linkedin_url = lead_data.get("linkedin_url")
             
             # Calculate BANT score using scoring service
+            bant_threshold = campaign.get("bant_threshold", 60)
             bant_result = self.scoring_service.calculate_bant_score(
                 company_size=company_size,
                 job_title=job_title,
@@ -90,10 +91,11 @@ class BANTAgent(BaseVectraAgent):
                 industry=industry,
                 linkedin_url=linkedin_url,
             )
-            
+
             bant_score = bant_result["bant_score"]
             bant_breakdown = bant_result["bant_breakdown"]
-            qualified = bant_result["qualified"]
+            # Use campaign-specific threshold instead of the hardcoded 60 in scoring service
+            qualified = bant_score >= bant_threshold
             
             # Update lead in database if lead_id provided
             if lead_id and self.db:

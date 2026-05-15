@@ -20,15 +20,20 @@ class BaseVectraAgent(ABC):
         """Initialize the agent with CrewAI configuration."""
         self.config = config or {}
         self.logger = get_logger(self.__class__.__name__)
-        
-        # Get default config and merge with provided config
+
         default_config = get_default_agent_config()
         agent_config = {**default_config, **self.config}
-        
-        # Initialize CrewAI Agent
-        self.crewai_agent = self._create_crewai_agent(agent_config)
-        
-        # Tools available to this agent
+
+        # Non-fatal: execute() methods use direct API calls (RocketReach, BANT scoring,
+        # email generator), not crewai_agent. CrewAI init can fail without blocking the pipeline.
+        try:
+            self.crewai_agent = self._create_crewai_agent(agent_config)
+        except Exception as exc:
+            self.logger.warning(
+                f"CrewAI agent init failed (non-fatal, direct API calls still work): {exc}"
+            )
+            self.crewai_agent = None
+
         self.tools = self._get_tools()
 
     def _create_crewai_agent(self, config: Dict[str, Any]) -> Agent:

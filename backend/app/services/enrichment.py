@@ -118,7 +118,7 @@ class EnrichmentService:
         score = 0
         
         # Company size match (0-30)
-        company_size = prospect_data.get("company_size", "").lower()
+        company_size = (prospect_data.get("company_size") or "").lower()
         if target_criteria and "company_sizes" in target_criteria:
             target_sizes = [s.lower() for s in target_criteria["company_sizes"]]
             if any(target in company_size or company_size in target for target in target_sizes):
@@ -131,7 +131,7 @@ class EnrichmentService:
             score += 15
         
         # Industry match (0-25)
-        industry = prospect_data.get("company_industry", "").lower()
+        industry = (prospect_data.get("company_industry") or "").lower()
         if target_criteria and "industries" in target_criteria:
             target_industries = [i.lower() for i in target_criteria["industries"]]
             if any(target in industry or industry in target for target in target_industries):
@@ -142,7 +142,7 @@ class EnrichmentService:
             score += 12
         
         # Location match (0-20)
-        location = prospect_data.get("location", "").lower()
+        location = (prospect_data.get("location") or "").lower()
         if target_criteria and "locations" in target_criteria:
             target_locations = [l.lower() for l in target_criteria["locations"]]
             if any(target in location or location in target for target in target_locations):
@@ -153,7 +153,7 @@ class EnrichmentService:
             score += 10
         
         # Job title match (0-15)
-        job_title = prospect_data.get("job_title", "").lower()
+        job_title = (prospect_data.get("job_title") or "").lower()
         if target_criteria and "job_titles" in target_criteria:
             target_titles = [t.lower() for t in target_criteria["job_titles"]]
             if any(target in job_title or job_title in target for target in target_titles):

@@ -13,54 +13,39 @@ logger = get_logger(__name__)
 def get_llm() -> Optional[Any]:
     """
     Get configured LLM for CrewAI agents.
-    
-    Priority:
-    1. Ollama (local) if OLLAMA_BASE_URL configured
-    2. Claude API (fallback) if CLAUDE_API_KEY configured
-    3. None (will use default)
-    
-    Note: CrewAI automatically detects LLM providers via environment variables:
-    - OLLAMA_BASE_URL and OLLAMA_MODEL for Ollama
-    - ANTHROPIC_API_KEY for Claude
-    
-    Returns:
-        LLM instance or None (will use CrewAI default)
+
+    Claude (Anthropic) is the primary provider — the brain for all agent reasoning.
+    Ollama is kept as optional fallback.
+    Returns an explicit LLM object so CrewAI never falls back to OpenAI.
     """
-    # Ollama Cloud API (priority if API key is set)
-    if settings.LLM_PROVIDER == "ollama" and settings.OLLAMA_API_KEY:
+    api_key = settings.ANTHROPIC_API_KEY or settings.CLAUDE_API_KEY
+
+    # Claude — primary provider
+    if settings.LLM_PROVIDER == "claude" and api_key:
         try:
-            import os
-            os.environ["OLLAMA_API_KEY"] = settings.OLLAMA_API_KEY
-            os.environ["OLLAMA_HOST"] = settings.OLLAMA_CLOUD_HOST
-            os.environ["OLLAMA_MODEL"] = settings.OLLAMA_MODEL
-            logger.info(f"LLM configured: Ollama Cloud {settings.OLLAMA_MODEL} at {settings.OLLAMA_CLOUD_HOST}")
-            return None
+            llm = LLM(
+                model=f"anthropic/{settings.CLAUDE_MODEL}",
+                api_key=api_key,
+            )
+            logger.info(f"LLM configured: Claude ({settings.CLAUDE_MODEL})")
+            return llm
         except Exception as e:
-            logger.warning(f"Failed to initialize Ollama Cloud LLM: {e}, falling back to local/remote Ollama")
-    
-    # Ollama local/remote
-    if settings.LLM_PROVIDER == "ollama" and settings.OLLAMA_BASE_URL:
+            logger.warning(f"Claude LLM init failed: {e}, trying Ollama fallback")
+
+    # Ollama fallback (local)
+    if settings.OLLAMA_BASE_URL and settings.OLLAMA_API_KEY:
         try:
-            import os
-            os.environ["OLLAMA_BASE_URL"] = settings.OLLAMA_BASE_URL
-            os.environ["OLLAMA_MODEL"] = settings.OLLAMA_MODEL
-            logger.info(f"LLM configured: Ollama {settings.OLLAMA_MODEL} at {settings.OLLAMA_BASE_URL}")
-            return None
+            llm = LLM(
+                model=f"ollama/{settings.OLLAMA_MODEL}",
+                base_url=settings.OLLAMA_BASE_URL,
+                api_key=settings.OLLAMA_API_KEY,
+            )
+            logger.info(f"LLM configured: Ollama {settings.OLLAMA_MODEL}")
+            return llm
         except Exception as e:
-            logger.warning(f"Failed to initialize Ollama LLM: {e}, falling back to Claude")
-    
-    # Fallback to Claude API via environment variable
-    if settings.CLAUDE_API_KEY:
-        try:
-            # CrewAI supports Claude via ANTHROPIC_API_KEY env var
-            logger.info("LLM configured: Claude API (fallback)")
-            logger.info("Note: Set ANTHROPIC_API_KEY environment variable for CrewAI to use Claude")
-            # Return None to use CrewAI default (which respects env vars)
-            return None
-        except Exception as e:
-            logger.warning(f"Failed to initialize Claude LLM: {e}")
-    
-    logger.warning("No LLM configured - using default CrewAI LLM")
+            logger.warning(f"Ollama LLM init failed: {e}")
+
+    logger.warning("No LLM configured — agents use direct API calls (email gen uses template fallback)")
     return None
 
 
