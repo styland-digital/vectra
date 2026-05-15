@@ -1,6 +1,6 @@
 """Lead model with BANT qualification."""
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum as SQLEnum, UniqueConstraint
+from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Enum as SQLEnum, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 import enum
@@ -80,13 +80,13 @@ class Lead(BaseModel):
 
     # Intent classification (from email responses)
     intent = Column(
-        SQLEnum(LeadIntent, name="lead_intent", create_type=False),
+        SQLEnum(LeadIntent, name="lead_intent", create_type=False, values_callable=lambda x: [e.value for e in x]),
         nullable=True
     )
 
     # Status
     status = Column(
-        SQLEnum(LeadStatus, name="lead_status", create_type=False),
+        SQLEnum(LeadStatus, name="lead_status", create_type=False, values_callable=lambda x: [e.value for e in x]),
         default=LeadStatus.NEW,
         nullable=False,
         index=True
@@ -94,6 +94,10 @@ class Lead(BaseModel):
 
     # Source tracking
     source = Column(String(100))
+
+    # Tracking timestamps
+    enriched_at = Column(DateTime)  # When lead data was enriched
+    qualified_at = Column(DateTime)  # When BANT qualification completed
 
     # Relationships
     campaign = relationship("Campaign", back_populates="leads")

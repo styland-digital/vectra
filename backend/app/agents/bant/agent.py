@@ -1,5 +1,6 @@
 """BANT qualifier agent."""
 
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
@@ -104,6 +105,8 @@ class BANTAgent(BaseVectraAgent):
                     lead.bant_score = bant_score
                     lead.bant_breakdown = bant_breakdown
                     lead.status = LeadStatus.QUALIFIED if qualified else LeadStatus.REJECTED
+                    if qualified:
+                        lead.qualified_at = datetime.now(timezone.utc)
                     self.db.commit()
                     self.logger.info(f"Updated lead {lead_id} with BANT score {bant_score}")
             

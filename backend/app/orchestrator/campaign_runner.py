@@ -171,6 +171,7 @@ class CampaignRunner:
                     enrichment_data=prospect.get("enrichment_data", {}),
                     status=LeadStatus.ENRICHED,
                     source=prospect.get("source", "rocketreach"),
+                    enriched_at=datetime.now(timezone.utc),
                 )
                 self.db.add(lead)
                 leads_created += 1

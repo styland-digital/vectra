@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, admin, user, campaigns, leads, emails, billing, analytics
+from app.api.v1 import auth, admin, user, campaigns, leads, emails, billing, analytics, meetings
 
 # Create main router
 api_router = APIRouter(prefix="/api/v1", tags=["v1"])
@@ -32,6 +32,5 @@ api_router.include_router(billing.router, prefix="/user/billing", tags=["billing
 api_router.include_router(analytics.router, prefix="/user/analytics", tags=["analytics"])
 api_router.include_router(analytics.router, prefix="/admin/analytics", tags=["analytics-admin"])
 
-# TODO: Include other sub-routers when implemented
-# from app.api.v1 import meetings
-# api_router.include_router(meetings.router, prefix="/user/meetings", tags=["meetings"])
+# Routes Meetings (under /user/meetings)
+api_router.include_router(meetings.router, prefix="/user/meetings", tags=["meetings"])

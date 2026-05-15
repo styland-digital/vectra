@@ -1,6 +1,8 @@
 """Email API endpoints."""
 
+import re
 from typing import List, Optional
+from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from uuid import UUID
@@ -17,8 +19,13 @@ from app.schemas.email import (
     TrackingInfo,
 )
 from app.db.models.user import User
-from app.db.models.email import Email
+from app.db.models.email import Email, EmailStatus
 from app.services.email import EmailService
+from app.services.resend import send_email as resend_send_email
+from app.core.config import settings
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 router = APIRouter()
 
@@ -97,8 +104,8 @@ def get_email(
     
     # Extract body as HTML and text
     body_html = email.body if email.body else None
-    body_text = email.body if email.body else None  # TODO: Convert HTML to text if needed
-    
+    body_text = re.sub(r'<[^>]+>', '', email.body) if email.body else None
+
     # Build approved_by info
     approved_by_info = None
     if email.approved_by_user:
@@ -106,16 +113,16 @@ def get_email(
             "id": str(email.approved_by_user.id),
             "name": email.approved_by_user.full_name if hasattr(email.approved_by_user, 'full_name') else email.approved_by_user.email,
         }
-    
+
     # Build tracking info
     tracking_info = TrackingInfo(
         opened_count=email.open_count,
         first_opened_at=email.opened_at,
-        last_opened_at=email.opened_at,  # TODO: Track last opened separately
+        last_opened_at=email.opened_at,
         clicked_count=email.click_count,
         first_clicked_at=email.clicked_at,
     )
-    
+
     return EmailDetailResponse(
         id=email.id,
         lead_id=email.lead_id,
@@ -123,12 +130,12 @@ def get_email(
         subject=email.subject,
         body_html=body_html,
         body_text=body_text,
-        from_email=None,  # TODO: Store from_email
-        from_name=None,  # TODO: Store from_name
+        from_email=settings.RESEND_FROM_EMAIL,
+        from_name="Vectra",
         to_email=email.lead.email if email.lead else None,
         status=email.status.value,
         generated_by="scheduler",
-        generation_model=None,  # TODO: Store generation model
+        generation_model=None,
         approved_by=approved_by_info,
         approved_at=email.approved_at,
         sent_at=email.sent_at,
@@ -157,14 +164,42 @@ def approve_email(
         body_html=request.modifications.get("body_html") if request.modifications else None,
     )
     
-    # TODO: Schedule email sending (add to queue)
-    scheduled_send_at = None
-    
+    # Send email immediately via Resend
+    lead_email = email.lead.email if email.lead else None
+    if lead_email:
+        try:
+            resend_send_email(
+                to=lead_email,
+                subject=email.subject,
+                html_content=email.body,
+                from_name="Vectra",
+            )
+            # Mark as SENT and record timestamp
+            email.status = EmailStatus.SENT
+            email.sent_at = datetime.now(timezone.utc)
+            db.commit()
+            db.refresh(email)
+            logger.info(
+                "Email sent after approval",
+                extra={"email_id": str(email.id), "to": lead_email},
+            )
+        except Exception as exc:
+            # Send failure must not block the approval response
+            logger.warning(
+                "Failed to send email after approval — email remains APPROVED",
+                extra={"email_id": str(email.id), "to": lead_email, "error": str(exc)},
+            )
+    else:
+        logger.warning(
+            "Approved email has no recipient address — skipping send",
+            extra={"email_id": str(email.id)},
+        )
+
     return EmailApproveResponse(
         id=email.id,
         status=email.status.value,
         approved_at=email.approved_at,
-        scheduled_send_at=scheduled_send_at,
+        scheduled_send_at=None,
     )
 
 
@@ -189,15 +224,15 @@ def reject_email(
     
     # Build response (similar to get_email)
     body_html = email.body if email.body else None
-    body_text = email.body if email.body else None
-    
+    body_text = re.sub(r'<[^>]+>', '', email.body) if email.body else None
+
     approved_by_info = None
     if email.approved_by_user:
         approved_by_info = {
             "id": str(email.approved_by_user.id),
             "name": email.approved_by_user.full_name if hasattr(email.approved_by_user, 'full_name') else email.approved_by_user.email,
         }
-    
+
     tracking_info = TrackingInfo(
         opened_count=email.open_count,
         first_opened_at=email.opened_at,
@@ -205,7 +240,7 @@ def reject_email(
         clicked_count=email.click_count,
         first_clicked_at=email.clicked_at,
     )
-    
+
     return EmailDetailResponse(
         id=email.id,
         lead_id=email.lead_id,
@@ -213,8 +248,8 @@ def reject_email(
         subject=email.subject,
         body_html=body_html,
         body_text=body_text,
-        from_email=None,
-        from_name=None,
+        from_email=settings.RESEND_FROM_EMAIL,
+        from_name="Vectra",
         to_email=email.lead.email if email.lead else None,
         status=email.status.value,
         generated_by="scheduler",

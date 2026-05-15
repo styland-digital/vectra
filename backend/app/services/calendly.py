@@ -32,43 +32,48 @@ class CalendlyService:
     ) -> str:
         """
         Generate Calendly scheduling link with pre-filled information.
-        
+
         Args:
             lead_email: Lead email address
             lead_name: Lead name (optional)
-            event_type: Event type UUID (optional, uses default if not provided)
-            
+            event_type: Event type slug/UUID (optional)
+
         Returns:
-            Calendly scheduling URL
+            Calendly scheduling URL with pre-filled query parameters
         """
-        if not self.api_key and not event_type:
-            logger.warning("Calendly API key and event_type not configured")
-            # Return generic Calendly link
-            calendly_username = settings.CALENDLY_API_KEY.split("/")[-1] if settings.CALENDLY_API_KEY else "vectra"
-            return f"{self.base_url}/{calendly_username}"
-        
-        event_uuid = event_type or self.event_type
-        
-        # Build Calendly URL with pre-filled info
-        # Format: https://calendly.com/{username}/{event_type}?name={name}&email={email}
-        params = {
-            "email": lead_email,
-        }
-        
+        params: Dict[str, str] = {}
+        if lead_email:
+            params["email"] = lead_email
         if lead_name:
             params["name"] = lead_name
-        
         query_string = urllib.parse.urlencode(params)
-        
-        if event_uuid:
-            # If we have event type, construct full URL
-            calendly_username = settings.CALENDLY_API_KEY.split("/")[-1] if "/" in str(settings.CALENDLY_API_KEY) else "vectra"
-            url = f"{self.base_url}/{calendly_username}/{event_uuid}?{query_string}"
+
+        # Resolve the base Calendly URL from settings.
+        # CALENDLY_API_KEY may hold either:
+        #   - A full URL  (e.g. "https://calendly.com/my-username")
+        #   - A raw API key / username  (e.g. "my-username" or "tok_...")
+        calendly_cfg = (
+            getattr(settings, "CALENDLY_URL", None)
+            or getattr(settings, "CALENDLY_API_KEY", None)
+            or ""
+        )
+
+        if calendly_cfg.startswith("https://calendly.com/"):
+            # Full URL supplied — use it as the base directly.
+            base = calendly_cfg.rstrip("/")
         else:
-            # Generic link
-            calendly_username = "vectra"
-            url = f"{self.base_url}/{calendly_username}?{query_string}"
-        
+            # Treat the value as a username (or fall back to "vectra").
+            username = calendly_cfg.strip("/") if calendly_cfg else "vectra"
+            # If the value looks like an API token (long hex string), ignore it.
+            if len(username) > 60 or " " in username:
+                username = "vectra"
+            base = f"{self.base_url}/{username}"
+
+        # Append event type slug when provided.
+        event_slug = event_type or self.event_type
+        if event_slug:
+            base = f"{base}/{event_slug.strip('/')}"
+
+        url = f"{base}?{query_string}" if query_string else base
         logger.info(f"Generated Calendly link for {lead_email}")
-        
         return url
