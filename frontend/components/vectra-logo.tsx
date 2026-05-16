@@ -32,6 +32,7 @@ export function VectraLogo({
         priority
         style={{ height: 'auto', width: 'auto', maxWidth: `${width}px` }}
         className={cn(
+          'dark:brightness-0 dark:invert',
           variant === 'white' && 'brightness-0 invert'
         )}
       />
