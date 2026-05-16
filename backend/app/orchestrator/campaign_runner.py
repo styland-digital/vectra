@@ -327,7 +327,13 @@ class CampaignRunner:
         return self.db.query(Campaign).filter(Campaign.id == campaign_id).first()
 
     def _is_paused(self, campaign_id: UUID) -> bool:
-        """Check whether the user has signalled a pause."""
+        """Check whether the user has signalled a pause. Checks Redis first (< 1ms), then DB."""
+        if self._redis:
+            try:
+                if self._redis.get(f"campaign:{campaign_id}:paused") == "1":
+                    return True
+            except Exception:
+                pass
         c = self._fetch_campaign(campaign_id)
         return c is not None and c.status == CampaignStatus.PAUSED
 

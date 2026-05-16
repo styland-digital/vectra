@@ -3,7 +3,7 @@
 from typing import List, Optional, Dict, Any
 from uuid import UUID
 from datetime import datetime, timezone
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func
 
 from fastapi import HTTPException, status
@@ -12,7 +12,10 @@ from app.db.models.campaign import Campaign, CampaignStatus
 from app.db.models.lead import Lead, LeadStatus
 from app.db.models.email import Email
 from app.db.models.user import User
-from app.orchestrator.campaign_runner import CampaignRunner
+from app.core.config import settings
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class CampaignService:
@@ -27,33 +30,43 @@ class CampaignService:
         skip: int = 0,
         limit: int = 100,
         status_filter: Optional[str] = None,
+        search: Optional[str] = None,
+        created_by_filter: Optional[UUID] = None,
+        created_after: Optional[datetime] = None,
+        started_after: Optional[datetime] = None,
     ) -> List[Campaign]:
-        """
-        List campaigns for user's organization.
-        
-        Args:
-            user: Current user
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            status_filter: Optional status filter
-            
-        Returns:
-            List of campaigns
-        """
+        """List campaigns for user's organization with optional filters."""
         if not user.organization_id:
             raise BadRequestError("User does not belong to an organization")
-        
-        query = self.db.query(Campaign).filter(
-            Campaign.organization_id == user.organization_id
+
+        query = (
+            self.db.query(Campaign)
+            .options(
+                joinedload(Campaign.created_by_user),
+                joinedload(Campaign.launched_by_user),
+            )
+            .filter(Campaign.organization_id == user.organization_id)
         )
-        
+
         if status_filter:
             try:
                 status_enum = CampaignStatus(status_filter.lower())
                 query = query.filter(Campaign.status == status_enum)
             except ValueError:
                 raise BadRequestError(f"Invalid status: {status_filter}")
-        
+
+        if search:
+            query = query.filter(Campaign.name.ilike(f"%{search}%"))
+
+        if created_by_filter:
+            query = query.filter(Campaign.created_by == created_by_filter)
+
+        if created_after:
+            query = query.filter(Campaign.created_at >= created_after)
+
+        if started_after:
+            query = query.filter(Campaign.started_at >= started_after)
+
         return query.order_by(Campaign.created_at.desc()).offset(skip).limit(limit).all()
 
     def get_campaign(
@@ -77,14 +90,22 @@ class CampaignService:
         if not user.organization_id:
             raise BadRequestError("User does not belong to an organization")
         
-        campaign = self.db.query(Campaign).filter(
-            Campaign.id == campaign_id,
-            Campaign.organization_id == user.organization_id
-        ).first()
-        
+        campaign = (
+            self.db.query(Campaign)
+            .options(
+                joinedload(Campaign.created_by_user),
+                joinedload(Campaign.launched_by_user),
+            )
+            .filter(
+                Campaign.id == campaign_id,
+                Campaign.organization_id == user.organization_id,
+            )
+            .first()
+        )
+
         if not campaign:
             raise NotFoundError("Campaign not found")
-        
+
         return campaign
 
     def create_campaign(
@@ -206,17 +227,22 @@ class CampaignService:
             Updated campaign
         """
         campaign = self.get_campaign(user, campaign_id)
-        
+
         # Only allow launching DRAFT campaigns
         if campaign.status != CampaignStatus.DRAFT:
             raise BadRequestError("Can only launch DRAFT campaigns")
-        
+
+        # Email must be verified before any agents run
+        if not getattr(user, "email_verified_at", None):
+            raise BadRequestError("Email verification required. Please verify your email before launching a campaign.")
+
         # Validate required fields
         if not campaign.target_criteria:
-            raise BadRequestError("Target criteria required to launch campaign")
-        
+            raise BadRequestError("Target criteria are required to launch a campaign.")
+
         # Update status
         campaign.status = CampaignStatus.ACTIVE
+        campaign.launched_by = user.id
         if not campaign.started_at:
             campaign.started_at = datetime.now(timezone.utc)
         
@@ -253,7 +279,20 @@ class CampaignService:
         campaign.status = CampaignStatus.PAUSED
         self.db.commit()
         self.db.refresh(campaign)
-        
+
+        # Signal pause to CampaignRunner via Redis and revoke the Celery task.
+        try:
+            import redis as redis_lib
+            from app.tasks.celery_app import celery_app as _celery
+            r = redis_lib.from_url(settings.REDIS_URL, decode_responses=True)
+            r.set(f"campaign:{campaign_id}:paused", "1", ex=86400)
+            task_id = r.get(f"campaign:{campaign_id}:celery_task_id")
+            if task_id:
+                _celery.control.revoke(task_id, terminate=False)
+                logger.info(f"Revoked Celery task {task_id} for campaign {campaign_id}")
+        except Exception as exc:
+            logger.warning(f"Could not revoke Celery task for campaign {campaign_id}: {exc}")
+
         return campaign
 
     def resume_campaign(
@@ -317,41 +356,61 @@ class CampaignService:
             Dictionary with campaign statistics
         """
         campaign = self.get_campaign(user, campaign_id)
-        
-        # Count leads by status
-        leads_total = self.db.query(Lead).filter(Lead.campaign_id == campaign_id).count()
+
+        base = Lead.campaign_id == campaign_id
+
+        def lead_count(status):
+            return self.db.query(Lead).filter(base, Lead.status == status).count()
+
+        leads_new       = lead_count(LeadStatus.NEW)
+        leads_enriched  = lead_count(LeadStatus.ENRICHED)
+        leads_scoring   = lead_count(LeadStatus.SCORING)
         leads_qualified = self.db.query(Lead).filter(
-            Lead.campaign_id == campaign_id,
-            Lead.status.in_([LeadStatus.QUALIFIED, LeadStatus.CONTACTED, LeadStatus.MEETING_SCHEDULED, LeadStatus.COMPLETED])
+            base,
+            Lead.status.in_([LeadStatus.QUALIFIED, LeadStatus.CONTACTED,
+                              LeadStatus.MEETING_SCHEDULED, LeadStatus.COMPLETED])
         ).count()
-        leads_rejected = self.db.query(Lead).filter(
-            Lead.campaign_id == campaign_id,
-            Lead.status == LeadStatus.REJECTED
+        leads_contacted = lead_count(LeadStatus.CONTACTED)
+        leads_rejected  = lead_count(LeadStatus.REJECTED)
+        leads_total     = self.db.query(Lead).filter(base).count()
+
+        # Email counts — status-based and engagement-based (opened_at/clicked_at columns)
+        email_base = Email.campaign_id == campaign_id
+        emails_total     = self.db.query(Email).filter(email_base).count()
+        emails_sent      = self.db.query(Email).filter(
+            email_base, Email.status.in_(['sent', 'delivered'])
         ).count()
-        
-        # Count emails
-        emails_sent = self.db.query(Email).filter(Email.campaign_id == campaign_id).count()
-        
-        # Calculate average BANT score
-        avg_bant = self.db.query(
-            func.avg(Lead.bant_score)
-        ).filter(Lead.campaign_id == campaign_id).scalar() or 0
-        
+        emails_opened    = self.db.query(Email).filter(
+            email_base, Email.opened_at.isnot(None)
+        ).count()
+        emails_clicked   = self.db.query(Email).filter(
+            email_base, Email.clicked_at.isnot(None)
+        ).count()
+
+        avg_bant = self.db.query(func.avg(Lead.bant_score)).filter(base).scalar() or 0
+
         return {
             "campaign_id": str(campaign_id),
             "status": campaign.status.value,
             "leads": {
-                "total": leads_total,
+                "total":     leads_total,
+                "new":       leads_new,
+                "enriched":  leads_enriched,
+                "scoring":   leads_scoring,
                 "qualified": leads_qualified,
-                "rejected": leads_rejected,
+                "contacted": leads_contacted,
+                "rejected":  leads_rejected,
             },
             "emails": {
-                "sent": emails_sent,
+                "total":   emails_total,
+                "sent":    emails_sent,
+                "opened":  emails_opened,
+                "clicked": emails_clicked,
             },
             "bant": {
-                "average_score": float(avg_bant),
+                "average":   round(float(avg_bant), 1),
                 "threshold": campaign.bant_threshold,
             },
-            "started_at": campaign.started_at.isoformat() if campaign.started_at else None,
+            "started_at":   campaign.started_at.isoformat() if campaign.started_at else None,
             "completed_at": campaign.completed_at.isoformat() if campaign.completed_at else None,
         }
