@@ -22,6 +22,14 @@ from app.services.lead import LeadService
 router = APIRouter()
 
 
+def _extract_bant_score(bd: dict, key: str) -> Optional[int]:
+    """Handle both {key: int} legacy and {key: {"score": int, ...}} new format."""
+    val = bd.get(key)
+    if isinstance(val, dict):
+        return val.get("score")
+    return val
+
+
 @router.get("", response_model=LeadListResponse)
 def list_leads(
     campaign_id: Optional[UUID] = Query(None, description="Filter by campaign ID"),
@@ -77,19 +85,12 @@ def list_leads(
         bant_info = None
         if lead.bant_score is not None:
             bd = lead.bant_breakdown or {}
-
-            def _bant_score(key: str) -> Optional[int]:
-                val = bd.get(key)
-                if isinstance(val, dict):
-                    return val.get("score")
-                return val  # already an int (legacy format)
-
             bant_info = {
                 "score": lead.bant_score,
-                "budget": _bant_score("budget"),
-                "authority": _bant_score("authority"),
-                "need": _bant_score("need"),
-                "timeline": _bant_score("timeline"),
+                "budget":    _extract_bant_score(bd, "budget"),
+                "authority": _extract_bant_score(bd, "authority"),
+                "need":      _extract_bant_score(bd, "need"),
+                "timeline":  _extract_bant_score(bd, "timeline"),
                 "notes": lead.enrichment_data.get("notes") if lead.enrichment_data else None,
             }
             bant_info = {k: v for k, v in bant_info.items() if v is not None} or None
@@ -191,16 +192,17 @@ def get_lead(
     
     bant_info = None
     if lead.bant_score is not None:
+        bd = lead.bant_breakdown or {}
         bant_info = {
             "score": lead.bant_score,
-            "budget": lead.bant_breakdown.get("budget") if lead.bant_breakdown else None,
-            "authority": lead.bant_breakdown.get("authority") if lead.bant_breakdown else None,
-            "need": lead.bant_breakdown.get("need") if lead.bant_breakdown else None,
-            "timeline": lead.bant_breakdown.get("timeline") if lead.bant_breakdown else None,
+            "budget":    _extract_bant_score(bd, "budget"),
+            "authority": _extract_bant_score(bd, "authority"),
+            "need":      _extract_bant_score(bd, "need"),
+            "timeline":  _extract_bant_score(bd, "timeline"),
             "notes": lead.enrichment_data.get("notes") if lead.enrichment_data else None,
         }
         bant_info = {k: v for k, v in bant_info.items() if v is not None} or None
-    
+
     email_status = None
     email_sent_at = None
     email_opened_at = None
@@ -209,7 +211,7 @@ def get_lead(
         email_status = latest_email.status.value
         email_sent_at = latest_email.sent_at
         email_opened_at = latest_email.opened_at
-    
+
     return LeadDetailResponse(
         id=lead.id,
         campaign_id=lead.campaign_id,
@@ -314,16 +316,17 @@ def update_lead(
     
     bant_info = None
     if lead.bant_score is not None:
+        bd = lead.bant_breakdown or {}
         bant_info = {
             "score": lead.bant_score,
-            "budget": lead.bant_breakdown.get("budget") if lead.bant_breakdown else None,
-            "authority": lead.bant_breakdown.get("authority") if lead.bant_breakdown else None,
-            "need": lead.bant_breakdown.get("need") if lead.bant_breakdown else None,
-            "timeline": lead.bant_breakdown.get("timeline") if lead.bant_breakdown else None,
+            "budget":    _extract_bant_score(bd, "budget"),
+            "authority": _extract_bant_score(bd, "authority"),
+            "need":      _extract_bant_score(bd, "need"),
+            "timeline":  _extract_bant_score(bd, "timeline"),
             "notes": lead.enrichment_data.get("notes") if lead.enrichment_data else None,
         }
         bant_info = {k: v for k, v in bant_info.items() if v is not None} or None
-    
+
     email_status = None
     email_sent_at = None
     email_opened_at = None
@@ -332,7 +335,7 @@ def update_lead(
         email_status = latest_email.status.value
         email_sent_at = latest_email.sent_at
         email_opened_at = latest_email.opened_at
-    
+
     return LeadResponse(
         id=lead.id,
         campaign_id=lead.campaign_id,
