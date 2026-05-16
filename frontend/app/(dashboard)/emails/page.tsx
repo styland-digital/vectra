@@ -25,6 +25,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -79,7 +80,7 @@ export default function EmailsPage() {
       render: (e) => (
         <div>
           <p className="font-medium text-[var(--text-primary)]">{e.lead?.name ?? '-'}</p>
-          <p className="text-xs text-[var(--text-muted)]">{e.lead?.email}</p>
+          <p className="text-caption text-[var(--text-muted)]">{e.lead?.email}</p>
         </div>
       ),
     },
@@ -87,7 +88,7 @@ export default function EmailsPage() {
       key: 'subject',
       header: t('emails.table.subject'),
       render: (e) => (
-        <span className="text-sm text-[var(--text-secondary)] truncate max-w-[250px] block">{e.subject}</span>
+        <span className="text-body-sm text-[var(--text-secondary)] truncate max-w-[250px] block">{e.subject}</span>
       ),
     },
     {
@@ -99,7 +100,7 @@ export default function EmailsPage() {
       key: 'created',
       header: t('emails.table.created'),
       render: (e) => (
-        <span className="text-sm text-[var(--text-muted)]">
+        <span className="text-body-sm text-[var(--text-muted)]">
           {format(new Date(e.created_at), 'dd/MM/yyyy')}
         </span>
       ),
@@ -204,19 +205,19 @@ export default function EmailsPage() {
           ) : emailDetail ? (
             <div className="mt-6 space-y-4">
               <div className="space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-body-sm">
                   <span className="text-[var(--text-muted)]">{t('emails.detail.from')}</span>
                   <span className="text-[var(--text-primary)]">{emailDetail.from_name} &lt;{emailDetail.from_email}&gt;</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-body-sm">
                   <span className="text-[var(--text-muted)]">{t('emails.detail.to')}</span>
                   <span className="text-[var(--text-primary)]">{emailDetail.to_email}</span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between text-body-sm">
                   <span className="text-[var(--text-muted)]">{t('emails.detail.subject')}</span>
                   <span className="text-[var(--text-primary)]">{emailDetail.subject}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
+                <div className="flex justify-between items-center text-body-sm">
                   <span className="text-[var(--text-muted)]">Status</span>
                   <StatusBadge status={emailDetail.status} type="email" />
                 </div>
@@ -225,7 +226,7 @@ export default function EmailsPage() {
               <Card>
                 <CardContent className="p-4">
                   <div
-                    className="prose prose-sm prose-invert max-w-none text-sm"
+                    className="max-w-none text-body-sm text-[var(--text-secondary)] [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:text-[var(--text-primary)] [&_strong]:font-medium [&_a]:text-[var(--color-primary-500)] [&_a]:underline [&_a]:underline-offset-2"
                     dangerouslySetInnerHTML={{ __html: emailDetail.body_html || emailDetail.body_text }}
                   />
                 </CardContent>
@@ -247,7 +248,7 @@ export default function EmailsPage() {
                 </div>
               )}
 
-              <div className="text-xs text-[var(--text-muted)]">
+              <div className="text-caption text-[var(--text-muted)]">
                 {t('emails.detail.generatedBy')}: {emailDetail.generated_by} ({emailDetail.generation_model})
               </div>
 
@@ -288,6 +289,7 @@ export default function EmailsPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('emails.reject')}</DialogTitle>
+            <DialogDescription>{t('emails.rejectDescription')}</DialogDescription>
           </DialogHeader>
           <Formik
             initialValues={{ reason: '' }}
@@ -309,7 +311,7 @@ export default function EmailsPage() {
                     placeholder={t('emails.detail.rejectPlaceholder')}
                   />
                   {errors.reason && touched.reason && (
-                    <p className="text-sm text-[var(--color-error-500)]">{errors.reason}</p>
+                    <p className="text-body-sm text-[var(--color-error-500)]">{errors.reason}</p>
                   )}
                 </div>
                 <DialogFooter>

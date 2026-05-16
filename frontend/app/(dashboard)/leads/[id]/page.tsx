@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -57,7 +58,7 @@ export default function LeadDetailPage() {
           </Button>
           <div>
             <div className="flex items-center space-x-3">
-              <h1 className="text-3xl font-bold text-[var(--text-primary)]">
+              <h1 className="text-h1 text-[var(--text-primary)]">
                 {lead.first_name} {lead.last_name}
               </h1>
               <StatusBadge status={lead.status} type="lead" />
@@ -83,18 +84,18 @@ export default function LeadDetailPage() {
             <CardContent>
               <dl className="space-y-3">
                 <div className="flex justify-between">
-                  <dt className="text-sm text-[var(--text-muted)]">Email</dt>
-                  <dd className="text-sm text-[var(--text-primary)]">{lead.email}</dd>
+                  <dt className="text-body-sm text-[var(--text-muted)]">Email</dt>
+                  <dd className="text-body-sm text-[var(--text-primary)]">{lead.email}</dd>
                 </div>
                 {lead.phone && (
                   <div className="flex justify-between">
-                    <dt className="text-sm text-[var(--text-muted)]">Phone</dt>
-                    <dd className="text-sm text-[var(--text-primary)]">{lead.phone}</dd>
+                    <dt className="text-body-sm text-[var(--text-muted)]">Phone</dt>
+                    <dd className="text-body-sm text-[var(--text-primary)]">{lead.phone}</dd>
                   </div>
                 )}
                 {lead.linkedin_url && (
                   <div className="flex justify-between">
-                    <dt className="text-sm text-[var(--text-muted)]">LinkedIn</dt>
+                    <dt className="text-body-sm text-[var(--text-muted)]">LinkedIn</dt>
                     <dd className="text-sm">
                       <a href={lead.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-[var(--color-primary-500)] hover:underline">
                         Profile
@@ -117,30 +118,30 @@ export default function LeadDetailPage() {
               {lead.company ? (
                 <dl className="space-y-3">
                   <div className="flex justify-between">
-                    <dt className="text-sm text-[var(--text-muted)]">Name</dt>
-                    <dd className="text-sm text-[var(--text-primary)]">{lead.company.name}</dd>
+                    <dt className="text-body-sm text-[var(--text-muted)]">Name</dt>
+                    <dd className="text-body-sm text-[var(--text-primary)]">{lead.company.name}</dd>
                   </div>
                   {lead.company.industry && (
                     <div className="flex justify-between">
-                      <dt className="text-sm text-[var(--text-muted)]">Industry</dt>
-                      <dd className="text-sm text-[var(--text-primary)]">{lead.company.industry}</dd>
+                      <dt className="text-body-sm text-[var(--text-muted)]">Industry</dt>
+                      <dd className="text-body-sm text-[var(--text-primary)]">{lead.company.industry}</dd>
                     </div>
                   )}
                   {lead.company.size && (
                     <div className="flex justify-between">
-                      <dt className="text-sm text-[var(--text-muted)]">Size</dt>
-                      <dd className="text-sm text-[var(--text-primary)]">{lead.company.size}</dd>
+                      <dt className="text-body-sm text-[var(--text-muted)]">Size</dt>
+                      <dd className="text-body-sm text-[var(--text-primary)]">{lead.company.size}</dd>
                     </div>
                   )}
                   {lead.company.location && (
                     <div className="flex justify-between">
-                      <dt className="text-sm text-[var(--text-muted)]">Location</dt>
-                      <dd className="text-sm text-[var(--text-primary)]">{lead.company.location}</dd>
+                      <dt className="text-body-sm text-[var(--text-muted)]">Location</dt>
+                      <dd className="text-body-sm text-[var(--text-primary)]">{lead.company.location}</dd>
                     </div>
                   )}
                 </dl>
               ) : (
-                <p className="text-sm text-[var(--text-muted)]">-</p>
+                <p className="text-body-sm text-[var(--text-muted)]">-</p>
               )}
             </CardContent>
           </Card>
@@ -156,19 +157,19 @@ export default function LeadDetailPage() {
               <CardContent>
                 <dl className="space-y-3">
                   <div className="flex justify-between">
-                    <dt className="text-sm text-[var(--text-muted)]">Title</dt>
-                    <dd className="text-sm text-[var(--text-primary)]">{lead.job.title}</dd>
+                    <dt className="text-body-sm text-[var(--text-muted)]">Title</dt>
+                    <dd className="text-body-sm text-[var(--text-primary)]">{lead.job.title}</dd>
                   </div>
                   {lead.job.department && (
                     <div className="flex justify-between">
-                      <dt className="text-sm text-[var(--text-muted)]">Department</dt>
-                      <dd className="text-sm text-[var(--text-primary)]">{lead.job.department}</dd>
+                      <dt className="text-body-sm text-[var(--text-muted)]">Department</dt>
+                      <dd className="text-body-sm text-[var(--text-primary)]">{lead.job.department}</dd>
                     </div>
                   )}
                   {lead.job.seniority && (
                     <div className="flex justify-between">
-                      <dt className="text-sm text-[var(--text-muted)]">Seniority</dt>
-                      <dd className="text-sm text-[var(--text-primary)]">{lead.job.seniority}</dd>
+                      <dt className="text-body-sm text-[var(--text-muted)]">Seniority</dt>
+                      <dd className="text-body-sm text-[var(--text-primary)]">{lead.job.seniority}</dd>
                     </div>
                   )}
                 </dl>
@@ -193,7 +194,7 @@ export default function LeadDetailPage() {
                   showDetails
                 />
               ) : (
-                <p className="text-sm text-[var(--text-muted)]">-</p>
+                <p className="text-body-sm text-[var(--text-muted)]">-</p>
               )}
             </CardContent>
           </Card>
@@ -229,7 +230,7 @@ export default function LeadDetailPage() {
                 {lead.meetings.map((m) => (
                   <div key={m.id} className="flex items-center justify-between">
                     <StatusBadge status={m.status} type="meeting" />
-                    <span className="text-sm text-[var(--text-muted)]">
+                    <span className="text-body-sm text-[var(--text-muted)]">
                       {format(new Date(m.scheduled_at), 'dd/MM/yyyy HH:mm')}
                     </span>
                   </div>
@@ -255,7 +256,7 @@ export default function LeadDetailPage() {
                         <p className="text-sm font-medium text-[var(--text-primary)] capitalize">
                           {interaction.type}
                         </p>
-                        <p className="text-xs text-[var(--text-muted)]">
+                        <p className="text-caption text-[var(--text-muted)]">
                           {interaction.agent_type} - {format(new Date(interaction.created_at), 'dd/MM/yyyy HH:mm')}
                         </p>
                       </div>
@@ -274,6 +275,7 @@ export default function LeadDetailPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('leads.edit')}</DialogTitle>
+            <DialogDescription>{t('leads.editDescription')}</DialogDescription>
           </DialogHeader>
           <Formik
             initialValues={{
@@ -301,17 +303,17 @@ export default function LeadDetailPage() {
               <Form className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>First name</Label>
+                    <Label>{t('auth.register.firstName')}</Label>
                     <Field as={Input} name="first_name" />
                     {errors.first_name && touched.first_name && (
-                      <p className="text-sm text-red-400">{errors.first_name}</p>
+                      <p className="text-body-sm text-[var(--color-error-500)]">{errors.first_name}</p>
                     )}
                   </div>
                   <div className="space-y-2">
-                    <Label>Last name</Label>
+                    <Label>{t('auth.register.lastName')}</Label>
                     <Field as={Input} name="last_name" />
                     {errors.last_name && touched.last_name && (
-                      <p className="text-sm text-red-400">{errors.last_name}</p>
+                      <p className="text-body-sm text-[var(--color-error-500)]">{errors.last_name}</p>
                     )}
                   </div>
                 </div>

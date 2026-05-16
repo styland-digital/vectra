@@ -84,6 +84,50 @@ function syncTokenToStore(token: string): void {
   }
 }
 
+function decodeJWT(token: string): { exp?: number } | null {
+  try {
+    const b64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")
+    return JSON.parse(atob(b64))
+  } catch {
+    return null
+  }
+}
+
+// Returns true when the token is expired or will expire within bufferSeconds.
+function isTokenExpiredOrExpiring(token: string, bufferSeconds = 30): boolean {
+  const payload = decodeJWT(token)
+  if (!payload?.exp) return false
+  return Date.now() / 1000 >= payload.exp - bufferSeconds
+}
+
+// Deduplicates concurrent proactive refreshes so only one network call is made.
+let proactiveRefreshPromise: Promise<string> | null = null
+
+async function proactivelyRefreshToken(): Promise<string> {
+  if (proactiveRefreshPromise) return proactiveRefreshPromise
+
+  proactiveRefreshPromise = (async () => {
+    const refreshToken =
+      typeof window !== "undefined" ? localStorage.getItem(REFRESH_KEY) : null
+    if (!refreshToken) throw new Error("No refresh token")
+
+    const { data } = await axios.post<TokenResponse>(
+      `${apiClient.defaults.baseURL}/api/v1/auth/refresh`,
+      { refresh_token: refreshToken }
+    )
+    setTokenCookie(data.access_token)
+    syncTokenToStore(data.access_token)
+    if (typeof window !== "undefined") {
+      localStorage.setItem(REFRESH_KEY, data.refresh_token)
+    }
+    return data.access_token
+  })().finally(() => {
+    proactiveRefreshPromise = null
+  })
+
+  return proactiveRefreshPromise
+}
+
 const apiClient = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
@@ -96,10 +140,9 @@ const apiClient = axios.create({
 })
 
 // Request interceptor — attach token from cookie (primary) or Zustand localStorage (fallback).
-// The cookie can go missing (cleared, browser restart) while the Zustand persist in
-// localStorage is still intact. In that case we restore the cookie on the fly so that
-// the SSR middleware stays in sync and subsequent requests don't need the fallback path.
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+// If the token is about to expire (within 30 s), proactively refresh before the request goes
+// out so that focus-triggered refetches never hit the API with a stale JWT.
+apiClient.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   let token = getCookieToken()
   if (!token) {
     token = getPersistedToken()
@@ -108,6 +151,17 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
       setTokenCookie(token)
     }
   }
+
+  if (token && isTokenExpiredOrExpiring(token)) {
+    try {
+      token = await proactivelyRefreshToken()
+    } catch {
+      // Proactive refresh failed; send with the current token so the response
+      // interceptor's reactive 401 handler gets a chance to recover.
+      token = getCookieToken() ?? getPersistedToken()
+    }
+  }
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }

@@ -20,6 +20,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -234,6 +235,7 @@ function TeamTab() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>{t('settings.team.invite')}</DialogTitle>
+            <DialogDescription>{t('settings.team.inviteDescription')}</DialogDescription>
           </DialogHeader>
           <Formik
             initialValues={{ email: '', first_name: '', last_name: '', role: 'viewer' }}

@@ -1,0 +1,452 @@
+{
+  "auth": {
+    "login": {
+      "title": "Connectez-vous à votre compte",
+      "subtitle": "Entrez votre email pour accéder à Vectra",
+      "cardTitle": "Connexion",
+      "cardDescription": "Accédez à votre dashboard et vos campagnes",
+      "email": "Email",
+      "emailPlaceholder": "m@example.com",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ? Créer un compte",
+      "forgotPassword": "Mot de passe oublie ?"
+    },
+    "register": {
+      "title": "Créez votre compte Vectra",
+      "subtitle": "Automatisez votre pipeline B2B avec l'IA",
+      "cardTitle": "Inscription",
+      "cardDescription": "Rejoignez des milliers d'utilisateurs Vectra",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "companyName": "Nom de l'entreprise",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "terms": "J'accepte les",
+      "termsLink": "conditions d'utilisation",
+      "submit": "Créer mon compte",
+      "submitting": "Création...",
+      "hasAccount": "Déjà un compte ? Se connecter",
+      "passwordRequirements": "Min. 8 caracteres, une majuscule, une minuscule et un chiffre"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublie",
+      "subtitle": "Entrez votre email pour recevoir un lien de reinitialisation",
+      "email": "Email",
+      "submit": "Envoyer le lien",
+      "submitting": "Envoi...",
+      "successMessage": "Si un compte existe avec cet email, vous recevrez un lien de reinitialisation.",
+      "backToLogin": "Retour à la connexion"
+    },
+    "resetPassword": {
+      "title": "Reinitialiser le mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe",
+      "password": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Reinitialiser",
+      "submitting": "Reinitialisation...",
+      "successMessage": "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.",
+      "backToLogin": "Retour à la connexion",
+      "invalidToken": "Le lien de reinitialisation est invalide ou a expiré."
+    },
+    "errors": {
+      "networkError": "Erreur de connexion au serveur. Vérifiez votre connexion internet.",
+      "invalidCredentials": "Email ou mot de passe incorrect",
+      "emailExists": "Un compte existe déjà avec cet email",
+      "registrationFailed": "L'inscription a échoué. Veuillez réessayer.",
+      "genericError": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+  "validation": {
+    "invalidEmail": "Veuillez entrer une adresse email valide",
+    "passwordRequired": "Le mot de passe est requis",
+    "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+    "passwordFormat": "Le mot de passe doit contenir une majuscule, une minuscule et un chiffre",
+    "passwordsMismatch": "Les mots de passe ne correspondent pas",
+    "firstNameMin": "Le prénom doit contenir au moins 2 caractères",
+    "lastNameMin": "Le nom doit contenir au moins 2 caractères",
+    "companyNameMin": "Le nom d'entreprise doit contenir au moins 2 caractères",
+    "termsRequired": "Vous devez accepter les conditions d'utilisation"
+  },
+  "authLayout": {
+    "tagline": "Powering your pipeline, simply.",
+    "description": "Agents IA autonomes qui automatisent votre cycle de vente B2B complet. Prospection, qualification BANT, et prise de rendez-vous.",
+    "feature1": "Réduction du CAC de 35%",
+    "feature2": "+120% de leads qualifiés",
+    "feature3": "ROI en 6-9 mois",
+    "stat1Label": "Réduction CAC",
+    "stat2Label": "Plus de leads",
+    "stat3Label": "Mois ROI",
+    "trusted": "Trusted by 500+ B2B companies worldwide"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Vue d'ensemble de vos campagnes de prospection",
+    "stats": {
+      "activeCampaigns": "Campagnes Actives",
+      "qualifiedLeads": "Prospects Qualifies",
+      "emailsSent": "Emails Envoyes",
+      "aiSuccessRate": "Taux de Succes IA",
+      "thisPeriod": "Cette periode",
+      "vsLastPeriod": "vs periode precedente",
+      "last30Days": "30 derniers jours",
+      "bantScore": "BANT Score >= 60"
+    },
+    "recentCampaigns": "Campagnes Recentes",
+    "recentCampaignsDescription": "Vos dernieres campagnes de prospection",
+    "quickActions": "Actions Rapides",
+    "quickActionsDescription": "Demarrez rapidement vos taches courantes",
+    "recentActivity": "Activite Recente",
+    "recentActivityDescription": "Les dernieres actions de vos agents IA",
+    "viewReport": "Voir rapport",
+    "newCampaign": "Nouvelle campagne",
+    "manageProspects": "Gerer mes prospects",
+    "pendingEmails": "Voir emails en attente",
+    "configureIntegrations": "Configurer integrations",
+    "viewAllCampaigns": "Voir toutes les campagnes",
+    "viewDetails": "Voir details",
+    "welcomeBack": "Bon retour",
+    "growthAnalytics": "Analytics de croissance",
+    "growthDescription": "Periode actuelle vs precedente sur {period} jours",
+    "noGrowthTitle": "Aucune donnee de croissance",
+    "noGrowthDescription": "Lancez votre premiere campagne pour suivre vos leads et vos emails.",
+    "aiAgents": "Agents IA",
+    "noAgentTitle": "Aucune execution d'agent",
+    "noAgentDescription": "Les agents IA s'activent lorsque vous lancez une campagne — ils prospectent, qualifient et planifient automatiquement.",
+    "subscription": "Abonnement",
+    "subscriptionDescription": "Utilisation de votre plan actuel"
+  },
+  "campaigns": {
+    "title": "Campagnes",
+    "subtitle": "Gerez vos campagnes de prospection",
+    "new": "Nouvelle campagne",
+    "create": "Creer une campagne",
+    "createDescription": "Definissez les parametres de votre nouvelle campagne de prospection IA.",
+    "delete": "Supprimer la campagne",
+    "launch": "Lancer",
+    "pause": "Mettre en pause",
+    "resume": "Reprendre",
+    "archive": "Archiver",
+    "status": {
+      "active": "Actif",
+      "paused": "En pause",
+      "completed": "Termine",
+      "draft": "Brouillon",
+      "archived": "Archive"
+    },
+    "form": {
+      "name": "Nom de la campagne",
+      "namePlaceholder": "Ex: Prospection Q1 2026",
+      "description": "Description",
+      "descriptionPlaceholder": "Decrivez l'objectif de la campagne",
+      "targetCriteria": "Criteres de ciblage",
+      "jobTitles": "Postes cibles",
+      "jobTitlesPlaceholder": "Ex: CTO, VP Engineering",
+      "locations": "Localisations",
+      "locationsPlaceholder": "Ex: France, Belgique",
+      "companySizes": "Taille d'entreprise",
+      "companySizesPlaceholder": "Ex: 50-200, 200-1000",
+      "industries": "Secteurs",
+      "industriesPlaceholder": "Ex: SaaS, Fintech",
+      "emailTemplate": "Template d'email",
+      "subject": "Objet",
+      "subjectPlaceholder": "Objet de l'email",
+      "tone": "Ton",
+      "settings": "Parametres",
+      "bantThreshold": "Seuil BANT",
+      "dailyLimit": "Limite quotidienne"
+    },
+    "toast": {
+      "created": "Campagne creee avec succes",
+      "updated": "Campagne mise a jour",
+      "deleted": "Campagne supprimee",
+      "launched": "Campagne lancee",
+      "paused": "Campagne mise en pause",
+      "resumed": "Campagne reprise"
+    },
+    "detail": {
+      "totalLeads": "Total Prospects",
+      "qualifiedLeads": "Qualifies",
+      "emailsSent": "Emails Envoyes",
+      "bantAverage": "BANT Moyen",
+      "pipeline": "Pipeline Campagne",
+      "pipelineDescription": "Entonnoir de prospects et distribution des emails",
+      "qualificationRate": "Taux de Qualification",
+      "noStats": "Aucune donnee d'activite",
+      "noStatsDescription": "Lancez cette campagne pour commencer a suivre les prospects et les emails.",
+      "createdBy": "Cree par",
+      "launchedBy": "Lance par",
+      "team": "Equipe",
+      "campaignInfo": "Info Campagne",
+      "daysRunning": "jours en cours",
+      "notStarted": "Non demarre",
+      "targetCriteria": "Criteres de Ciblage",
+      "emailTemplate": "Modele d'Email",
+      "tabs": {
+        "details": "Details",
+        "leads": "Prospects",
+        "emails": "Emails"
+      }
+    },
+    "table": {
+      "name": "Campagne",
+      "status": "Statut",
+      "owner": "Proprietaire",
+      "leads": "Prospects",
+      "emails": "Emails",
+      "bant": "BANT",
+      "dailyLimit": "Limite / jour",
+      "started": "Demarre le",
+      "created": "Cree le",
+      "actions": "Actions"
+    },
+    "filters": {
+      "searchPlaceholder": "Rechercher des campagnes…",
+      "allStatuses": "Tous les statuts",
+      "creator": "Createur",
+      "allCreators": "Tous les createurs",
+      "period": "Periode",
+      "allTime": "Toute la periode",
+      "last7Days": "7 derniers jours",
+      "last30Days": "30 derniers jours",
+      "last90Days": "90 derniers jours"
+    },
+    "confirmDelete": {
+      "title": "Supprimer la campagne",
+      "description": "Cette action est irreversible. Toutes les donnees associees seront supprimees."
+    },
+    "empty": {
+      "title": "Aucune campagne",
+      "description": "Creez votre premiere campagne IA pour commencer a prospecter automatiquement."
+    }
+  },
+  "leads": {
+    "title": "Prospects",
+    "subtitle": "Gerez et qualifiez vos prospects",
+    "filters": {
+      "campaign": "Campagne",
+      "status": "Statut",
+      "intent": "Intention",
+      "bantMin": "BANT Min",
+      "bantMax": "BANT Max",
+      "allCampaigns": "Toutes les campagnes",
+      "allStatuses": "Tous les statuts",
+      "allIntents": "Toutes les intentions"
+    },
+    "status": {
+      "new": "Nouveau",
+      "enriched": "Enrichi",
+      "qualified": "Qualifie",
+      "nurture": "Nurture",
+      "rejected": "Rejete",
+      "contacted": "Contacte"
+    },
+    "intent": {
+      "high": "Elevee",
+      "medium": "Moyenne",
+      "low": "Faible",
+      "unknown": "Inconnue"
+    },
+    "detail": {
+      "contactInfo": "Informations de contact",
+      "companyInfo": "Informations entreprise",
+      "jobInfo": "Poste",
+      "bantScore": "Score BANT",
+      "emailStatus": "Statut email",
+      "meetingInfo": "Rendez-vous",
+      "interactions": "Interactions",
+      "noInteractions": "Aucune interaction"
+    },
+    "edit": "Modifier le prospect",
+    "editDescription": "Modifiez les informations du prospect selectionne.",
+    "toast": {
+      "updated": "Prospect mis a jour"
+    },
+    "table": {
+      "name": "Nom",
+      "company": "Entreprise",
+      "bant": "BANT",
+      "status": "Statut",
+      "intent": "Intention",
+      "date": "Date"
+    },
+    "empty": {
+      "title": "Aucun prospect",
+      "description": "Les prospects apparaitront ici une fois vos campagnes lancees."
+    }
+  },
+  "emails": {
+    "title": "Emails",
+    "subtitle": "Gerez les emails generes par l'IA",
+    "filters": {
+      "campaign": "Campagne",
+      "status": "Statut",
+      "allCampaigns": "Toutes les campagnes",
+      "allStatuses": "Tous les statuts"
+    },
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "rejectDescription": "Indiquez la raison du rejet pour aider l'IA a ameliorer les prochains emails.",
+    "status": {
+      "pending": "En attente",
+      "approved": "Approuve",
+      "rejected": "Rejete",
+      "sent": "Envoye",
+      "opened": "Ouvert",
+      "clicked": "Clique",
+      "bounced": "Rebondi"
+    },
+    "detail": {
+      "preview": "Apercu de l'email",
+      "from": "De",
+      "to": "A",
+      "subject": "Objet",
+      "tracking": "Suivi",
+      "opens": "Ouvertures",
+      "clicks": "Clics",
+      "generatedBy": "Genere par",
+      "rejectReason": "Raison du rejet",
+      "rejectPlaceholder": "Expliquez pourquoi cet email est rejete..."
+    },
+    "toast": {
+      "approved": "Email approuve",
+      "rejected": "Email rejete"
+    },
+    "table": {
+      "to": "Destinataire",
+      "subject": "Objet",
+      "status": "Statut",
+      "campaign": "Campagne",
+      "engagement": "Engagement",
+      "created": "Cree le",
+      "actions": "Actions"
+    },
+    "empty": {
+      "title": "Aucun email",
+      "description": "Les emails generes apparaitront ici."
+    },
+    "pending": "en attente"
+  },
+  "meetings": {
+    "title": "Rendez-vous",
+    "subtitle": "Suivez vos rendez-vous planifies",
+    "tabs": {
+      "upcoming": "A venir",
+      "completed": "Termines",
+      "noShow": "Absences"
+    },
+    "status": {
+      "scheduled": "Planifie",
+      "completed": "Termine",
+      "no_show": "Absent"
+    },
+    "scheduledAt": "Prevu le",
+    "openCalendly": "Ouvrir Calendly",
+    "noResults": "Aucun rendez-vous",
+    "empty": {
+      "title": "Aucun rendez-vous",
+      "description": "Les rendez-vous apparaitront ici une fois planifies par vos agents IA."
+    }
+  },
+  "settings": {
+    "title": "Parametres",
+    "subtitle": "Gerez votre organisation et votre compte",
+    "tabs": {
+      "organization": "Organisation",
+      "team": "Equipe",
+      "billing": "Facturation",
+      "account": "Compte"
+    },
+    "organization": {
+      "title": "Organisation",
+      "name": "Nom de l'organisation",
+      "plan": "Plan actuel",
+      "manageSubscription": "Gerer l'abonnement"
+    },
+    "team": {
+      "title": "Equipe",
+      "subtitle": "Gerez les membres de votre equipe",
+      "invite": "Inviter un membre",
+      "inviteDescription": "Remplissez les informations pour inviter un nouveau membre dans votre organisation.",
+      "createUser": "Creer un utilisateur",
+      "table": {
+        "name": "Nom",
+        "email": "Email",
+        "role": "Role",
+        "status": "Statut",
+        "lastLogin": "Derniere connexion",
+        "actions": "Actions"
+      },
+      "confirmRemove": {
+        "title": "Retirer le membre",
+        "description": "Cette personne perdra l'acces a l'organisation."
+      },
+      "roles": {
+        "owner": "Proprietaire",
+        "admin": "Administrateur",
+        "manager": "Manager",
+        "operator": "Operateur",
+        "viewer": "Observateur"
+      }
+    },
+    "billing": {
+      "title": "Facturation",
+      "currentPlan": "Plan actuel",
+      "manageSubscription": "Gerer l'abonnement",
+      "upgrade": "Changer de plan"
+    },
+    "account": {
+      "title": "Compte",
+      "profile": "Profil",
+      "changePassword": "Changer le mot de passe",
+      "language": "Langue",
+      "email": "Email",
+      "name": "Nom complet"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "campaigns": "Campagnes",
+    "leads": "Prospects",
+    "emails": "Emails",
+    "meetings": "Rendez-vous",
+    "analytics": "Analytics",
+    "settings": "Parametres"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "retry": "Reessayer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Creer",
+    "search": "Rechercher",
+    "noResults": "Aucun resultat",
+    "logout": "Deconnexion",
+    "language": "Langue",
+    "prospects": "prospects",
+    "qualified": "qualifies",
+    "appointments": "RDV",
+    "confirm": "Confirmer",
+    "actions": "Actions",
+    "back": "Retour",
+    "view": "Voir",
+    "showing": "Affichage",
+    "of": "sur",
+    "day": "jour",
+    "previous": "Precedent",
+    "next": "Suivant",
+    "all": "Tous",
+    "filters": "Filtres",
+    "clearFilters": "Effacer les filtres",
+    "saving": "Enregistrement...",
+    "submitting": "Envoi...",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "remove": "Retirer"
+  }
+}
