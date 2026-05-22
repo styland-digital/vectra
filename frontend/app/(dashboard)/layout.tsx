@@ -1,10 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Input } from '@/components/ui/input'
 import {
   Sheet,
@@ -23,9 +22,7 @@ import {
   Menu,
   Bell,
   LogOut,
-  Globe,
   Search,
-  HelpCircle,
   ChevronDown,
 } from 'lucide-react'
 import { VectraLogo } from '@/components/vectra-logo'
@@ -33,19 +30,21 @@ import { motion } from '@/components/motion'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/stores/auth'
-import { useUIStore } from '@/lib/stores/ui'
 import { useTranslation } from '@/lib/i18n'
-
-const inter = Inter({ subsets: ['latin'] })
+import { ThemeSwitcher } from '@/components/theme-switcher'
+import { LanguageSwitcher } from '@/components/language-switcher'
+import { NavEmailBadge } from '@/components/features/nav-badge'
+import { useLiveData } from '@/lib/hooks/useLiveData'
 
 interface NavItemProps {
   href: string
   icon: React.ComponentType<{ className?: string }>
   label: string
   isActive: boolean
+  badge?: React.ComponentType
 }
 
-function NavItem({ href, icon: Icon, label, isActive }: NavItemProps) {
+function NavItem({ href, icon: Icon, label, isActive, badge: Badge }: NavItemProps) {
   return (
     <motion.div whileHover={{ x: 2 }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.15 }}>
       <Link
@@ -61,10 +60,11 @@ function NavItem({ href, icon: Icon, label, isActive }: NavItemProps) {
           <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[var(--color-primary-500)] rounded-r-full" />
         )}
         <Icon className={cn(
-          'h-5 w-5 transition-colors duration-200',
+          'h-5 w-5 shrink-0 transition-colors duration-200',
           isActive ? 'text-[var(--color-primary-500)]' : 'text-[var(--text-muted)]'
         )} />
-        {label}
+        <span className="flex-1 truncate">{label}</span>
+        {Badge && <Badge />}
       </Link>
     </motion.div>
   )
@@ -75,22 +75,19 @@ function Sidebar() {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { t } = useTranslation()
+  useLiveData()
 
   const menuItems = [
-    { name: t('nav.dashboard'), href: '/', icon: LayoutDashboard },
+    { name: t('nav.dashboard'), href: '/dashboard', icon: LayoutDashboard },
     { name: t('nav.campaigns'), href: '/campaigns', icon: Target },
     { name: t('nav.leads'), href: '/leads', icon: Users },
-    { name: t('nav.emails'), href: '/emails', icon: Mail },
+    { name: t('nav.emails'), href: '/emails', icon: Mail, badge: NavEmailBadge },
     { name: t('nav.meetings'), href: '/meetings', icon: Calendar },
     { name: t('nav.analytics'), href: '/analytics', icon: BarChart3 },
   ]
 
   const accountItems = [
     { name: t('nav.settings'), href: '/settings', icon: Settings },
-  ]
-
-  const supportItems = [
-    { name: 'Help', href: '#', icon: HelpCircle },
   ]
 
   const userInitials = user
@@ -129,6 +126,7 @@ function Sidebar() {
                 icon={item.icon}
                 label={item.name}
                 isActive={pathname === item.href}
+                badge={'badge' in item ? item.badge : undefined}
               />
             ))}
           </nav>
@@ -155,26 +153,6 @@ function Sidebar() {
           </nav>
         </div>
 
-        {/* Divider */}
-        <div className="h-px bg-[var(--border-secondary)] mx-3 mb-6" />
-
-        {/* Support Section */}
-        <div>
-          <p className="text-overline text-[var(--text-muted)] px-3 mb-2">
-            SUPPORT
-          </p>
-          <nav className="space-y-1">
-            {supportItems.map((item) => (
-              <NavItem
-                key={item.name}
-                href={item.href}
-                icon={item.icon}
-                label={item.name}
-                isActive={false}
-              />
-            ))}
-          </nav>
-        </div>
       </div>
 
       {/* User Profile */}
@@ -184,7 +162,6 @@ function Sidebar() {
           className="w-full flex items-center gap-3 hover:bg-[var(--surface-hover)] rounded-lg p-1 -m-1 transition-colors duration-150 cursor-pointer"
         >
           <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatars/01.png" />
             <AvatarFallback className="bg-[var(--color-primary-100)] text-[var(--color-primary-700)] text-sm font-medium">
               {userInitials}
             </AvatarFallback>
@@ -229,32 +206,12 @@ function Sidebar() {
   )
 }
 
-function LanguageToggle() {
-  const { locale, setLocale } = useUIStore()
-
-  return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}
-      className="h-9 w-9 p-0 hover:bg-[var(--surface-hover)] transition-colors duration-150"
-    >
-      <Globe className="h-4 w-4 text-[var(--text-muted)]" />
-      <span className="sr-only">Toggle language</span>
-    </Button>
-  )
-}
 
 function Header() {
-  const { user } = useAuthStore()
   const { t } = useTranslation()
 
-  const userInitials = user
-    ? `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase()
-    : 'U'
-
   return (
-    <header className="h-16 border-b border-[var(--border-primary)] backdrop-blur-sm bg-[var(--surface-primary)]/95">
+    <header className="h-16 border-b border-[var(--border-primary)] bg-[var(--surface-primary)]">
       <div className="flex h-full items-center px-4 gap-4">
         {/* Mobile menu */}
         <Sheet>
@@ -288,32 +245,12 @@ function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-2 ml-auto">
-          <LanguageToggle />
-
-          <Button variant="ghost" size="sm" className="h-9 w-9 p-0 relative hover:bg-[var(--surface-hover)] transition-colors duration-150">
-            <Bell className="h-4 w-4 text-[var(--text-muted)]" />
-            <span className="sr-only">Notifications</span>
-            <span className="absolute top-2 right-2 h-2 w-2 bg-[var(--color-error-500)] rounded-full"></span>
-          </Button>
+          <ThemeSwitcher />
+          <LanguageSwitcher />
 
           <Button variant="ghost" size="sm" className="h-9 w-9 p-0 hover:bg-[var(--surface-hover)] transition-colors duration-150">
-            <HelpCircle className="h-4 w-4 text-[var(--text-muted)]" />
-            <span className="sr-only">Help</span>
-          </Button>
-
-          <div className="h-6 w-px bg-[var(--border-primary)] mx-1 hidden sm:block" />
-
-          <Button variant="ghost" className="h-9 px-2 gap-2 group">
-            <Avatar className="h-7 w-7">
-              <AvatarImage src="/avatars/01.png" />
-              <AvatarFallback className="bg-[var(--color-primary-100)] text-[var(--color-primary-700)] text-xs font-medium">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar>
-            <span className="hidden sm:block text-body-sm text-[var(--text-secondary)]">
-              {user?.first_name ?? ''}
-            </span>
-            <ChevronDown className="h-4 w-4 text-[var(--text-muted)] hidden sm:block group-hover:rotate-180 transition-transform duration-200" />
+            <Bell className="h-4 w-4 text-[var(--text-muted)]" />
+            <span className="sr-only">Notifications</span>
           </Button>
         </div>
       </div>
@@ -327,7 +264,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className={cn('min-h-screen bg-[var(--bg-secondary)] font-sans antialiased', inter.className)}>
+    <div className="min-h-screen bg-[var(--bg-secondary)] font-sans antialiased">
       <div className="flex h-screen">
         {/* Desktop sidebar */}
         <div className="hidden md:flex">
@@ -338,7 +275,7 @@ export default function DashboardLayout({
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header />
           <main className="flex-1 overflow-y-auto">
-            <div className="max-w-7xl mx-auto px-6 py-6">
+            <div className="px-6 py-6">
               {children}
             </div>
           </main>

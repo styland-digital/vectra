@@ -1,12 +1,13 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { PageLoader } from "@/components/page-loader"
 
 function Skeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "rounded-xl bg-gradient-to-r from-[var(--surface-secondary)] via-[var(--surface-hover)] to-[var(--surface-secondary)] bg-[length:200%_100%] animate-shimmer",
+        "rounded-md bg-[var(--surface-secondary)] animate-vectra-skeleton",
         className
       )}
     />
@@ -19,14 +20,7 @@ interface LoadingSkeletonProps {
 
 export function LoadingSkeleton({ variant = "card" }: LoadingSkeletonProps) {
   if (variant === "page") {
-    return (
-      <div className="min-h-screen bg-[var(--bg-primary)] flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="h-8 w-8 rounded-md bg-gradient-to-br from-[var(--color-primary-500)] to-[var(--color-primary-600)] animate-pulse" />
-          <Skeleton className="h-4 w-24" />
-        </div>
-      </div>
-    )
+    return <PageLoader />
   }
 
   if (variant === "stats") {
@@ -35,7 +29,7 @@ export function LoadingSkeleton({ variant = "card" }: LoadingSkeletonProps) {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-lg border border-[var(--border-primary)] bg-[var(--surface-primary)] p-6"
+            className="rounded-xl border border-[var(--border-primary)] bg-[var(--surface-primary)] p-5"
           >
             <Skeleton className="h-4 w-24 mb-3" />
             <Skeleton className="h-8 w-16 mb-2" />
@@ -51,12 +45,12 @@ export function LoadingSkeleton({ variant = "card" }: LoadingSkeletonProps) {
       <div className="space-y-3">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="flex items-center space-x-4 py-3">
-            <Skeleton className="h-10 w-10 rounded-full" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-10 w-10 rounded-md shrink-0" />
+            <div className="flex-1 space-y-2 min-w-0">
+              <Skeleton className="h-4 w-[75%]" />
               <Skeleton className="h-3 w-1/2" />
             </div>
-            <Skeleton className="h-6 w-16" />
+            <Skeleton className="h-6 w-16 shrink-0" />
           </div>
         ))}
       </div>

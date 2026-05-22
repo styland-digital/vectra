@@ -26,13 +26,16 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     JWT_ALGORITHM: str = "HS256"
 
-    # LLM
-    LLM_PROVIDER: str = "ollama"
-    OLLAMA_BASE_URL: str = "https://api.ollama.com"
+    # LLM — Claude (Anthropic) is the primary provider
+    LLM_PROVIDER: str = "claude"
+    ANTHROPIC_API_KEY: str = ""  # Set via environment variable
+    CLAUDE_MODEL: str = "claude-haiku-4-5-20251001"  # Fast + cheap for agents
+    # Legacy Ollama (kept for optional fallback)
+    OLLAMA_BASE_URL: str = ""
     OLLAMA_MODEL: str = "llama2:7b"
-    OLLAMA_API_KEY: str = ""  # Set via environment variable
+    OLLAMA_API_KEY: str = ""
     OLLAMA_CLOUD_HOST: str = "https://ollama.com"
-    CLAUDE_API_KEY: str = ""  # Set via environment variable
+    CLAUDE_API_KEY: str = ""  # Alias, prefer ANTHROPIC_API_KEY
 
     # External APIs
     ROCKETREACH_API_KEY: str = ""  # Set via environment variable

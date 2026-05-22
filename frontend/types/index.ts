@@ -24,18 +24,19 @@ export enum EmailStatus {
   APPROVED = "approved",
   REJECTED = "rejected",
   SENT = "sent",
-  OPENED = "opened",
-  CLICKED = "clicked",
+  DELIVERED = "delivered",
   BOUNCED = "bounced",
 }
 
 export enum LeadStatus {
   NEW = "new",
   ENRICHED = "enriched",
+  SCORING = "scoring",
   QUALIFIED = "qualified",
-  NURTURE = "nurture",
-  REJECTED = "rejected",
   CONTACTED = "contacted",
+  MEETING_SCHEDULED = "meeting_scheduled",
+  COMPLETED = "completed",
+  REJECTED = "rejected",
 }
 
 export enum LeadIntent {
@@ -111,10 +112,20 @@ export interface MessageResponse {
 // Campaigns
 // ============================================
 
+export interface CampaignUserInfo {
+  id: string
+  first_name: string | null
+  last_name: string | null
+  email: string
+}
+
 export interface Campaign {
   id: string
   organization_id: string
-  created_by: string
+  created_by: string | null
+  created_by_user: CampaignUserInfo | null
+  launched_by: string | null
+  launched_by_user: CampaignUserInfo | null
   name: string
   description: string
   status: CampaignStatus
@@ -251,6 +262,8 @@ export interface Email {
   body_preview: string
   status: EmailStatus
   generated_by: string
+  opened_at: string | null
+  clicked_at: string | null
   created_at: string
 }
 
@@ -366,6 +379,7 @@ export interface TeamMetrics {
   active_users: number
   user_activity_rate: number
   role_distribution: Record<string, number>
+  period_days: number
 }
 
 export interface AIAgentMetrics {
@@ -476,5 +490,5 @@ export interface AnalyticsEventTrack {
 
 export interface EventTrackResponse {
   success: boolean
-  event_id: string
+  message: string
 }

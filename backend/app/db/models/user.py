@@ -67,6 +67,7 @@ class User(BaseModel):
     # Relationships
     organization = relationship("Organization", back_populates="users")
     created_campaigns = relationship("Campaign", back_populates="created_by_user", foreign_keys="Campaign.created_by")
+    launched_campaigns = relationship("Campaign", back_populates="launched_by_user", foreign_keys="Campaign.launched_by")
     approved_emails = relationship("Email", back_populates="approved_by_user", foreign_keys="Email.approved_by")
 
     @property

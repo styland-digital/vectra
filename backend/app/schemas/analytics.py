@@ -109,50 +109,55 @@ class AIAgentMetrics(BaseModel):
 
 class OverviewMetrics(BaseModel):
     """Key overview metrics for dashboard."""
-    campaigns_active: int = Field(..., description="Active campaigns count")
-    leads_processed_30d: int = Field(..., description="Leads processed in last 30 days")
-    leads_qualified_30d: int = Field(..., description="Leads qualified in last 30 days")
-    emails_sent_30d: int = Field(..., description="Emails sent in last 30 days")
-    qualification_rate: float = Field(..., description="Lead qualification rate")
-    email_open_rate: float = Field(..., description="Email open rate")
+    active_campaigns: int = Field(..., description="Currently active campaigns")
+    qualified_leads: int = Field(..., description="Total qualified leads (BANT >= 60)")
+    emails_sent: int = Field(..., description="Emails sent in the period")
+    ai_success_rate: float = Field(..., description="AI agent success rate percentage")
 
 
 class GrowthMetrics(BaseModel):
-    """Growth metrics comparing periods."""
-    leads_7d_vs_30d: Dict[str, int] = Field(..., description="Leads comparison")
-    emails_7d_vs_30d: Dict[str, int] = Field(..., description="Emails comparison")
+    """Growth metrics comparing current period vs previous period."""
+    leads_current: int = Field(..., description="Leads in current period")
+    leads_previous: int = Field(..., description="Leads in previous period")
+    leads_change: float = Field(..., description="Leads change percentage")
+    emails_current: int = Field(..., description="Emails in current period")
+    emails_previous: int = Field(..., description="Emails in previous period")
+    emails_change: float = Field(..., description="Emails change percentage")
 
 
 class SubscriptionInfo(BaseModel):
     """Subscription information."""
-    plan_type: str = Field(..., description="Subscription plan type")
+    plan: str = Field(..., description="Subscription plan name")
     status: str = Field(..., description="Subscription status")
-    current_period_end: Optional[str] = Field(None, description="Current period end date")
+    leads_used: int = Field(..., description="Leads consumed in current period")
+    leads_limit: int = Field(..., description="Maximum leads allowed by plan")
 
 
 class AnalyticsDashboard(BaseModel):
     """Complete dashboard analytics response."""
     overview: OverviewMetrics = Field(..., description="Key overview metrics")
-    growth: GrowthMetrics = Field(..., description="Growth metrics")
+    growth: GrowthMetrics = Field(..., description="Growth metrics vs previous period")
     team: EngagementMetrics = Field(..., description="Team engagement metrics")
     ai_agents: AIAgentMetrics = Field(..., description="AI agent metrics")
-    subscription: Optional[SubscriptionInfo] = Field(None, description="Subscription info")
+    subscription: SubscriptionInfo = Field(..., description="Subscription info")
     generated_at: str = Field(..., description="Timestamp when metrics were generated")
 
     class Config:
         json_schema_extra = {
             "example": {
                 "overview": {
-                    "campaigns_active": 3,
-                    "leads_processed_30d": 1250,
-                    "leads_qualified_30d": 287,
-                    "emails_sent_30d": 450,
-                    "qualification_rate": 22.96,
-                    "email_open_rate": 36.0
+                    "active_campaigns": 3,
+                    "qualified_leads": 287,
+                    "emails_sent": 450,
+                    "ai_success_rate": 86.67
                 },
                 "growth": {
-                    "leads_7d_vs_30d": {"current": 95, "previous": 1155},
-                    "emails_7d_vs_30d": {"current": 34, "previous": 416}
+                    "leads_current": 95,
+                    "leads_previous": 82,
+                    "leads_change": 15.85,
+                    "emails_current": 34,
+                    "emails_previous": 29,
+                    "emails_change": 17.24
                 },
                 "team": {
                     "total_users": 8,
@@ -171,9 +176,10 @@ class AnalyticsDashboard(BaseModel):
                     "period_days": 30
                 },
                 "subscription": {
-                    "plan_type": "growth",
+                    "plan": "growth",
                     "status": "active",
-                    "current_period_end": "2026-03-02T00:00:00"
+                    "leads_used": 287,
+                    "leads_limit": 1000
                 },
                 "generated_at": "2026-02-02T13:45:00Z"
             }

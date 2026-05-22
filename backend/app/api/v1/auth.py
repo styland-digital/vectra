@@ -59,11 +59,15 @@ def login(
     # Build UserWithOrgResponse
     org_response = None
     if user.organization:
+        org = user.organization
         org_response = OrganizationResponse(
-            id=user.organization.id,
-            name=user.organization.name,
-            slug=user.organization.slug,
-            plan=user.organization.plan.value if user.organization.plan else "starter",
+            id=org.id,
+            name=org.name,
+            slug=org.slug,
+            plan=org.plan.value if org.plan else "starter",
+            settings=org.settings or {},
+            created_at=org.created_at,
+            updated_at=org.updated_at,
         )
 
     user_response = UserWithOrgResponse(
@@ -73,6 +77,7 @@ def login(
         last_name=user.last_name,
         role=user.role.value,
         is_active=user.is_active,
+        email_verified_at=user.email_verified_at,
         created_at=user.created_at,
         organization=org_response,
     )
@@ -141,11 +146,15 @@ def register(
     # Build UserWithOrgResponse
     org_response = None
     if hasattr(user, 'organization') and user.organization:
+        org = user.organization
         org_response = OrganizationResponse(
-            id=user.organization.id,
-            name=user.organization.name,
-            slug=user.organization.slug,
-            plan=user.organization.plan.value if user.organization.plan else "starter",
+            id=org.id,
+            name=org.name,
+            slug=org.slug,
+            plan=org.plan.value if org.plan else "starter",
+            settings=org.settings or {},
+            created_at=org.created_at,
+            updated_at=org.updated_at,
         )
 
     user_response = UserWithOrgResponse(
@@ -155,6 +164,7 @@ def register(
         last_name=user.last_name,
         role=user.role.value,
         is_active=user.is_active,
+        email_verified_at=user.email_verified_at,
         created_at=user.created_at,
         organization=org_response,
     )
@@ -321,11 +331,15 @@ def accept_invitation(
     # Build UserWithOrgResponse
     org_response = None
     if user.organization:
+        org = user.organization
         org_response = OrganizationResponse(
-            id=user.organization.id,
-            name=user.organization.name,
-            slug=user.organization.slug,
-            plan=user.organization.plan.value if user.organization.plan else "starter",
+            id=org.id,
+            name=org.name,
+            slug=org.slug,
+            plan=org.plan.value if org.plan else "starter",
+            settings=org.settings or {},
+            created_at=org.created_at,
+            updated_at=org.updated_at,
         )
 
     user_response = UserWithOrgResponse(
@@ -335,6 +349,7 @@ def accept_invitation(
         last_name=user.last_name,
         role=user.role.value,
         is_active=user.is_active,
+        email_verified_at=user.email_verified_at,
         created_at=user.created_at,
         organization=org_response,
     )

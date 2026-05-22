@@ -42,13 +42,20 @@ class Campaign(BaseModel):
         nullable=True
     )
 
+    # Who launched the campaign (may differ from creator)
+    launched_by = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True
+    )
+
     # Campaign info
     name = Column(String(255), nullable=False)
     description = Column(Text)
 
     # Status
     status = Column(
-        SQLEnum(CampaignStatus, name="campaign_status", create_type=False),
+        SQLEnum(CampaignStatus, name="campaign_status", create_type=False, values_callable=lambda x: [e.value for e in x]),
         default=CampaignStatus.DRAFT,
         nullable=False,
         index=True
@@ -73,6 +80,7 @@ class Campaign(BaseModel):
     # Relationships
     organization = relationship("Organization", back_populates="campaigns")
     created_by_user = relationship("User", back_populates="created_campaigns", foreign_keys=[created_by])
+    launched_by_user = relationship("User", back_populates="launched_campaigns", foreign_keys=[launched_by])
     leads = relationship("Lead", back_populates="campaign", cascade="all, delete-orphan")
     emails = relationship("Email", back_populates="campaign", cascade="all, delete-orphan")
     meetings = relationship("Meeting", back_populates="campaign", cascade="all, delete-orphan")

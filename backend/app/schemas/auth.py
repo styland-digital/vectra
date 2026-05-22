@@ -3,7 +3,7 @@
 from pydantic import BaseModel, EmailStr, Field
 from uuid import UUID
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
 
 
 class LoginRequest(BaseModel):
@@ -40,6 +40,9 @@ class OrganizationResponse(BaseModel):
     name: str
     slug: str
     plan: str = "starter"
+    settings: Dict[str, Any] = {}
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -68,6 +71,7 @@ class UserWithOrgResponse(BaseModel):
     last_name: Optional[str] = None
     role: str
     is_active: bool
+    email_verified_at: Optional[datetime] = None
     created_at: datetime
     organization: Optional[OrganizationResponse] = None  # None for platform admins
 

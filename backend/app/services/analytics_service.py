@@ -10,10 +10,10 @@ from sqlalchemy.dialects.postgresql import JSON
 from app.core.logging import get_logger
 from app.db.models.user import User
 from app.db.models.organization import Organization
-from app.db.models.campaign import Campaign
+from app.db.models.campaign import Campaign, CampaignStatus
 from app.db.models.lead import Lead
-from app.db.models.email import Email
-from app.db.models.subscription import Subscription
+from app.db.models.email import Email, EmailStatus
+from app.db.models.subscription import Subscription, SubscriptionStatus
 
 logger = get_logger(__name__)
 
@@ -106,7 +106,7 @@ class AnalyticsService:
 
             # Get active subscriptions
             active_subscriptions = query.filter(
-                Subscription.status == "active"
+                Subscription.status == SubscriptionStatus.ACTIVE
             ).all()
 
             # Calculate metrics
@@ -145,11 +145,13 @@ class AnalyticsService:
 
             campaigns_created = campaigns_query.count()
             campaigns_active = campaigns_query.filter(
-                Campaign.status == "active"
+                Campaign.status == CampaignStatus.ACTIVE
             ).count()
 
             # Leads metrics
-            leads_query = self.db.query(Lead).join(Campaign).filter(
+            leads_query = self.db.query(Lead).join(
+                Campaign, Lead.campaign_id == Campaign.id
+            ).filter(
                 Campaign.organization_id == organization_id,
                 Lead.created_at >= start_date
             )
@@ -163,23 +165,17 @@ class AnalyticsService:
             bant_scores = [lead.bant_score for lead in leads_query.all() if lead.bant_score is not None]
             bant_average = sum(bant_scores) / len(bant_scores) if bant_scores else 0
 
-            # Email metrics
-            emails_query = self.db.query(Email).join(Lead).join(Campaign).filter(
+            # Email metrics — join directly via campaign_id to avoid ambiguous multi-hop
+            emails_query = self.db.query(Email).join(
+                Campaign, Email.campaign_id == Campaign.id
+            ).filter(
                 Campaign.organization_id == organization_id,
                 Email.created_at >= start_date
             )
 
-            emails_sent = emails_query.filter(
-                Email.status == "sent"
-            ).count()
-
-            emails_opened = emails_query.filter(
-                Email.opened_at.isnot(None)
-            ).count()
-
-            emails_clicked = emails_query.filter(
-                Email.clicked_at.isnot(None)
-            ).count()
+            emails_sent = emails_query.filter(Email.status == EmailStatus.SENT).count()
+            emails_opened = emails_query.filter(Email.opened_at.isnot(None)).count()
+            emails_clicked = emails_query.filter(Email.clicked_at.isnot(None)).count()
 
             # Calculate rates
             open_rate = (emails_opened / emails_sent * 100) if emails_sent > 0 else 0
@@ -202,30 +198,36 @@ class AnalyticsService:
             }
 
         except Exception as e:
+            self.db.rollback()
             logger.error(f"Failed to get usage metrics: {e}", exc_info=True)
-            return {}
+            return {
+                "campaigns_created": 0, "campaigns_active": 0,
+                "leads_processed": 0, "leads_qualified": 0,
+                "qualification_rate": 0.0, "emails_sent": 0,
+                "emails_opened": 0, "emails_clicked": 0,
+                "email_open_rate": 0.0, "email_click_rate": 0.0,
+                "bant_average_score": 0.0, "period_days": days
+            }
 
     async def get_user_engagement_metrics(self, organization_id: UUID, days: int = 30) -> Dict[str, Any]:
         """Get user engagement KPIs for an organization."""
         try:
             start_date = datetime.utcnow() - timedelta(days=days)
 
-            # Get organization users
             users = self.db.query(User).filter(
                 User.organization_id == organization_id
             ).all()
 
             total_users = len(users)
 
-            # Active users (users who performed any action in the period)
-            # For now, we'll use a simple heuristic based on campaigns or leads they created
-            active_users = self.db.query(User).filter(
-                User.organization_id == organization_id
-            ).join(Campaign, User.id == Campaign.created_by, isouter=True).filter(
-                Campaign.created_at >= start_date
-            ).distinct().count()
+            # Active users = users who created at least one campaign in the period
+            active_user_rows = self.db.query(Campaign.created_by).filter(
+                Campaign.organization_id == organization_id,
+                Campaign.created_at >= start_date,
+                Campaign.created_by.isnot(None)
+            ).distinct().all()
+            active_users = len(active_user_rows)
 
-            # User roles distribution
             role_distribution = {}
             for user in users:
                 role = user.role.value if user.role else "unknown"
@@ -240,8 +242,15 @@ class AnalyticsService:
             }
 
         except Exception as e:
+            self.db.rollback()
             logger.error(f"Failed to get user engagement metrics: {e}", exc_info=True)
-            return {}
+            return {
+                "total_users": 0,
+                "active_users": 0,
+                "user_activity_rate": 0.0,
+                "role_distribution": {},
+                "period_days": days
+            }
 
     async def get_ai_agent_metrics(self, organization_id: UUID, days: int = 30) -> Dict[str, Any]:
         """Get AI agent performance KPIs."""
@@ -266,8 +275,8 @@ class AnalyticsService:
                     Lead.campaign_id == campaign.id
                 ).count()
 
-                emails_count = self.db.query(Email).join(Lead).filter(
-                    Lead.campaign_id == campaign.id
+                emails_count = self.db.query(Email).filter(
+                    Email.campaign_id == campaign.id
                 ).count()
 
                 if leads_count > 0:
@@ -306,55 +315,90 @@ class AnalyticsService:
             }
 
         except Exception as e:
+            self.db.rollback()
             logger.error(f"Failed to get AI agent metrics: {e}", exc_info=True)
-            return {}
+            return {
+                "total_agent_runs": 0, "successful_runs": 0,
+                "success_rate": 0.0, "prospector_runs": 0,
+                "bant_runs": 0, "scheduler_runs": 0, "period_days": days
+            }
 
     async def get_dashboard_overview(self, organization_id: UUID) -> Dict[str, Any]:
         """Get comprehensive overview for dashboard."""
         try:
-            # Get metrics for different time periods
             metrics_30d = await self.get_usage_metrics(organization_id, 30)
-            metrics_7d = await self.get_usage_metrics(organization_id, 7)
-
+            metrics_prev = await self.get_usage_metrics(organization_id, 60)
             engagement = await self.get_user_engagement_metrics(organization_id)
             ai_metrics = await self.get_ai_agent_metrics(organization_id)
 
-            # Get organization subscription info
+            # Current period = last 30d, previous period = 30d before that
+            leads_current = metrics_30d.get("leads_processed", 0)
+            leads_previous = max(metrics_prev.get("leads_processed", 0) - leads_current, 0)
+            leads_change = round(
+                ((leads_current - leads_previous) / leads_previous * 100) if leads_previous > 0 else 0,
+                2
+            )
+
+            emails_current = metrics_30d.get("emails_sent", 0)
+            emails_previous = max(metrics_prev.get("emails_sent", 0) - emails_current, 0)
+            emails_change = round(
+                ((emails_current - emails_previous) / emails_previous * 100) if emails_previous > 0 else 0,
+                2
+            )
+
+            # Total qualified leads all-time for the org
+            total_qualified = self.db.query(Lead).join(
+                Campaign, Lead.campaign_id == Campaign.id
+            ).filter(
+                Campaign.organization_id == organization_id,
+                Lead.bant_score >= 60
+            ).count()
+
+            # Active campaigns
+            active_campaigns = self.db.query(Campaign).filter(
+                Campaign.organization_id == organization_id,
+                Campaign.status == CampaignStatus.ACTIVE
+            ).count()
+
+            # Subscription info
             subscription = self.db.query(Subscription).filter(
                 Subscription.organization_id == organization_id,
-                Subscription.status == "active"
+                Subscription.status == SubscriptionStatus.ACTIVE
             ).first()
 
-            plan_info = None
-            if subscription:
-                plan_info = {
-                    "plan_type": subscription.plan_type,
-                    "status": subscription.status,
-                    "current_period_end": subscription.current_period_end.isoformat() if subscription.current_period_end else None
-                }
+            plan_limits = {"starter": 500, "growth": 1000, "scale": 5000}
+            plan_name = subscription.plan_type if subscription else "starter"
+            sub_status = subscription.status.value if subscription else "active"
+            leads_limit = plan_limits.get(plan_name, 500)
+            leads_used = self.db.query(Lead).join(
+                Campaign, Lead.campaign_id == Campaign.id
+            ).filter(
+                Campaign.organization_id == organization_id
+            ).count()
 
             return {
                 "overview": {
-                    "campaigns_active": metrics_30d.get("campaigns_active", 0),
-                    "leads_processed_30d": metrics_30d.get("leads_processed", 0),
-                    "leads_qualified_30d": metrics_30d.get("leads_qualified", 0),
-                    "emails_sent_30d": metrics_30d.get("emails_sent", 0),
-                    "qualification_rate": metrics_30d.get("qualification_rate", 0),
-                    "email_open_rate": metrics_30d.get("email_open_rate", 0)
+                    "active_campaigns": active_campaigns,
+                    "qualified_leads": total_qualified,
+                    "emails_sent": metrics_30d.get("emails_sent", 0),
+                    "ai_success_rate": ai_metrics.get("success_rate", 0),
                 },
                 "growth": {
-                    "leads_7d_vs_30d": {
-                        "current": metrics_7d.get("leads_processed", 0),
-                        "previous": metrics_30d.get("leads_processed", 0) - metrics_7d.get("leads_processed", 0)
-                    },
-                    "emails_7d_vs_30d": {
-                        "current": metrics_7d.get("emails_sent", 0),
-                        "previous": metrics_30d.get("emails_sent", 0) - metrics_7d.get("emails_sent", 0)
-                    }
+                    "leads_current": leads_current,
+                    "leads_previous": leads_previous,
+                    "leads_change": leads_change,
+                    "emails_current": emails_current,
+                    "emails_previous": emails_previous,
+                    "emails_change": emails_change,
                 },
                 "team": engagement,
                 "ai_agents": ai_metrics,
-                "subscription": plan_info,
+                "subscription": {
+                    "plan": plan_name,
+                    "status": sub_status,
+                    "leads_used": leads_used,
+                    "leads_limit": leads_limit,
+                },
                 "generated_at": datetime.utcnow().isoformat()
             }
 
@@ -370,7 +414,7 @@ class AnalyticsService:
 
             # Active subscriptions
             active_subscriptions = self.db.query(Subscription).filter(
-                Subscription.status == "active"
+                Subscription.status == SubscriptionStatus.ACTIVE
             ).count()
 
             # Revenue metrics

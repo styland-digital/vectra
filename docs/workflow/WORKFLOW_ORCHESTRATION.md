@@ -386,6 +386,19 @@ Avant de considérer une feature comme terminée :
 - [ ] `STATUS.md` mis à jour
 - [ ] Review de code (si applicable)
 
+### 🎨 Checklist UI obligatoire (composants frontend)
+
+Pour toute page ou composant avec des boutons/contrôles interactifs :
+
+- [ ] **Hauteur uniforme des boutons** : tous les éléments d'un groupe d'actions ont la même hauteur
+  - Bouton icône seul → `size="icon"` (h-10 w-10), jamais `size="sm"`
+  - Segmented control / toggle période → conteneur `h-10 items-stretch`, boutons `flex items-center`
+  - Jamais `size="sm"` (h-8) mélangé avec `size="default"` (h-10) dans un même groupe
+- [ ] **Tokens typography** : aucune taille Tailwind brute (`text-sm`, `text-xs`) hors composants Shadcn
+- [ ] **i18n** : toutes les chaînes visibles passent par `t()`, clés ajoutées dans `en.json` ET `fr.json`
+- [ ] **Light/Dark** : couleurs via `var(--...)` uniquement — pas de `text-gray-*`, `bg-white`, etc.
+- [ ] `npx tsc --noEmit` → zéro erreur avant de livrer
+
 ---
 
 ## 🎯 ORDRE D'EXÉCUTION RECOMMANDÉ

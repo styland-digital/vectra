@@ -32,6 +32,8 @@ class EmailResponse(BaseModel):
     body_preview: Optional[str] = None
     status: str
     generated_by: Optional[str] = None
+    opened_at: Optional[datetime] = None
+    clicked_at: Optional[datetime] = None
     created_at: datetime
 
     class Config:

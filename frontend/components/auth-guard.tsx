@@ -45,12 +45,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     if (!token && !isPublic) {
       router.replace("/login")
     } else if (token && isAuth) {
-      router.replace("/")
+      router.replace("/dashboard")
     }
   }, [isHydrated, isInitialized, token, pathname, router])
 
-  // Show loading while hydrating or initializing
+  // Show loading while hydrating or initializing — but never block public/auth pages
   if (!isHydrated || !isInitialized) {
+    const isPublicPage = publicPaths.some((p) => pathname.startsWith(p))
+    if (isPublicPage) return <>{children}</>
     return <LoadingSkeleton variant="page" />
   }
 

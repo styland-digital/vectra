@@ -11,7 +11,7 @@ from app.api.deps import (
     get_organization_user,
     require_role,
 )
-from app.schemas.auth import UserResponse, MessageResponse
+from app.schemas.auth import UserResponse, UserWithOrgResponse, OrganizationResponse, MessageResponse
 from app.schemas.organization import (
     OrganizationResponse,
     OrganizationUpdate,
@@ -29,16 +29,39 @@ from app.services.notification import NotificationService
 router = APIRouter()
 
 
-@router.get("/me", response_model=UserResponse)
+@router.get("/me", response_model=UserWithOrgResponse)
 def get_me(
     current_user: User = Depends(get_current_user),
 ):
     """
-    Get current authenticated user profile.
-    
+    Get current authenticated user profile with organization details.
+
     Works for all users (platform admin and organization users).
     """
-    return current_user
+    org_response = None
+    if current_user.organization:
+        org = current_user.organization
+        org_response = OrganizationResponse(
+            id=org.id,
+            name=org.name,
+            slug=org.slug,
+            plan=org.plan.value if org.plan else "starter",
+            settings=org.settings or {},
+            created_at=org.created_at,
+            updated_at=org.updated_at,
+        )
+
+    return UserWithOrgResponse(
+        id=current_user.id,
+        email=current_user.email,
+        first_name=current_user.first_name,
+        last_name=current_user.last_name,
+        role=current_user.role.value,
+        is_active=current_user.is_active,
+        email_verified_at=current_user.email_verified_at,
+        created_at=current_user.created_at,
+        organization=org_response,
+    )
 
 
 @router.get("/organizations/me", response_model=OrganizationResponse)

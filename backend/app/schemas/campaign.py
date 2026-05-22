@@ -6,11 +6,25 @@ from datetime import datetime
 from typing import Optional, Dict, Any
 
 
+class CampaignUserInfo(BaseModel):
+    """Minimal user info embedded in campaign responses."""
+    id: UUID
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    email: str
+
+    class Config:
+        from_attributes = True
+
+
 class CampaignResponse(BaseModel):
     """Campaign response with details."""
     id: UUID
     organization_id: UUID
     created_by: Optional[UUID] = None
+    created_by_user: Optional[CampaignUserInfo] = None
+    launched_by: Optional[UUID] = None
+    launched_by_user: Optional[CampaignUserInfo] = None
     name: str
     description: Optional[str] = None
     status: str

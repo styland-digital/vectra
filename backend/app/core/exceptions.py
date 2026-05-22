@@ -17,10 +17,10 @@ class VectraException(HTTPException):
 class NotFoundError(VectraException):
     """Resource not found."""
 
-    def __init__(self, resource: str = "Resource"):
+    def __init__(self, detail: str = "Resource not found"):
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"{resource} not found",
+            detail=detail,
         )
 
 

@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { VectraLogo } from '@/components/vectra-logo'
+import { PageLoader } from '@/components/page-loader'
 import { useAuthStore } from '@/lib/stores/auth'
 import { CheckCircle2, ArrowRight, Zap, Target, Calendar } from 'lucide-react'
 
 export default function HomePage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading } = useAuthStore()
+  const { token, isLoading } = useAuthStore()
+  const isAuthenticated = !!token
 
   useEffect(() => {
     // Rehydrate auth store
@@ -20,19 +22,13 @@ export default function HomePage() {
   useEffect(() => {
     // Redirect to dashboard if authenticated
     if (!isLoading && isAuthenticated) {
-      router.push('/')
+      router.push('/dashboard')
     }
   }, [isAuthenticated, isLoading, router])
 
-  // Show loading state while checking auth
+  // Show loading state while checking auth (même pattern que AuthGuard)
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--bg-secondary)]">
-        <div className="animate-pulse">
-          <VectraLogo size="lg" />
-        </div>
-      </div>
-    )
+    return <PageLoader />
   }
 
   // If authenticated, the useEffect will redirect - show nothing

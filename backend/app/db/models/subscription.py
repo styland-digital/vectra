@@ -56,17 +56,18 @@ class Subscription(BaseModel):
 
     # Plan info
     plan_type = Column(
-        SQLEnum(PlanType, name="plan_type", create_type=False),
+        "plan",
+        String(50),
         nullable=False
     )
     billing_cycle = Column(
-        SQLEnum(BillingCycle, name="billing_cycle", create_type=False),
+        SQLEnum(BillingCycle, name="billing_cycle", create_type=False, values_callable=lambda x: [e.value for e in x]),
         nullable=True
     )
 
     # Status
     status = Column(
-        SQLEnum(SubscriptionStatus, name="subscription_status", create_type=False),
+        SQLEnum(SubscriptionStatus, name="subscription_status", create_type=False, values_callable=lambda x: [e.value for e in x]),
         nullable=False
     )
 
@@ -90,4 +91,4 @@ class Subscription(BaseModel):
         return self.status in [SubscriptionStatus.ACTIVE, SubscriptionStatus.TRIALING]
 
     def __repr__(self) -> str:
-        return f"<Subscription {self.plan_type.value} ({self.status.value})>"
+        return f"<Subscription {self.plan_type} ({self.status.value})>"

@@ -12,7 +12,8 @@ const publicPaths = [
 ]
 
 // Auth pages (login, register, etc.) - redirect to dashboard if already authenticated
-const authPaths = ["/login", "/register", "/forgot-password", "/reset-password"]
+// Note: /reset-password is intentionally excluded — password reset links must work for authenticated users too
+const authPaths = ["/login", "/register", "/forgot-password"]
 
 function isPublicPath(pathname: string): boolean {
   return publicPaths.some((path) => pathname.startsWith(path))

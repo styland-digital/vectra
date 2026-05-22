@@ -55,7 +55,7 @@ class Email(BaseModel):
 
     # Status and approval
     status = Column(
-        SQLEnum(EmailStatus, name="email_status", create_type=False),
+        SQLEnum(EmailStatus, name="email_status", create_type=False, values_callable=lambda x: [e.value for e in x]),
         default=EmailStatus.PENDING,
         nullable=False,
         index=True
@@ -81,7 +81,7 @@ class Email(BaseModel):
     # Bounce handling
     bounced_at = Column(DateTime)
     bounce_type = Column(
-        SQLEnum(BounceType, name="bounce_type", create_type=False),
+        SQLEnum(BounceType, name="bounce_type", create_type=False, values_callable=lambda x: [e.value for e in x]),
         nullable=True
     )
 
